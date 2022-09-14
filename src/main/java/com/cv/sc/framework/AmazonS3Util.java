@@ -30,9 +30,9 @@ public class AmazonS3Util {
 	private static final String SUFFIX = "/";
 	private static String bucketName = "serielcoders";
 	private static final Logger log = LogManager.getLogger(AmazonS3Util.class);
-	public static final String AWS_S3_BUCKET = "bkpunebucket1";
-	public static final String AWS_ACCESS_KEY = "AKIA4WVCDFY4UI5YTM4H";
-	public static final String AWS_SECRET_KEY = "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";
+	public static final String AWS_S3_BUCKET = "";
+	public static final String AWS_ACCESS_KEY = "";
+	public static final String AWS_SECRET_KEY = "";
 
 	public static AmazonS3 amazonS3;
 
