@@ -2,7 +2,7 @@ package com.cv.sc.serviceImpl;
 
 import com.cv.sc.framework.AmazonS3Util;
 import com.cv.sc.models.ApiResponse;
-import com.cv.sc.models.ResultModel;
+import com.cv.sc.models.SearchResult;
 import com.cv.sc.repository.ResultModelRepository;
 import com.cv.sc.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +28,9 @@ public class TestServiceImpl implements TestService {
     @Autowired
     private ResultModelRepository resultModelRepository;
     @Override
-    public ApiResponse saveResult(ResultModel resultModel) {
+    public ApiResponse saveResult(SearchResult resultModel) {
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYYMMddhhmmssSSS");
-        String timestamp = simpleDateFormat.format(new Date());
-        resultModel.setDateExecuted(new Date());
+        String timestamp = new SimpleDateFormat("YYYYMMddhhmmssSSS").format(new Date());
         String fileContent = resultModel.getJsonResult();
         String fileName = "Json_Result_" + timestamp+".txt";
         String contentType = "text/plain";

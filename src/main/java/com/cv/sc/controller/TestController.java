@@ -1,7 +1,7 @@
 package com.cv.sc.controller;
 
 import com.cv.sc.models.ApiResponse;
-import com.cv.sc.models.ResultModel;
+import com.cv.sc.models.SearchResult;
 import com.cv.sc.service.TestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,7 @@ public class TestController {
     private TestService testService;
 
     @PostMapping("/saveResult")
-    public ApiResponse saveResult(@RequestBody ResultModel resultModel) {
+    public ApiResponse saveResult(@RequestBody SearchResult resultModel) {
         log.info("saveResult is called: "+resultModel);
         return testService.saveResult(resultModel);
     }

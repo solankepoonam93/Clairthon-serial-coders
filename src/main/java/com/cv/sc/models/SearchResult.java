@@ -7,7 +7,7 @@ import java.util.Date;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 @Entity
-public class ResultModel {
+public class SearchResult {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,8 +16,8 @@ public class ResultModel {
     private String queryUrl;
 
     @NotNull
-    @Temporal(TIMESTAMP)
-    private Date dateExecuted;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private SearchParent searchParent;
 
     private String jsonResult;
 
@@ -37,14 +37,6 @@ public class ResultModel {
         this.queryUrl = queryUrl;
     }
 
-    public Date getDateExecuted() {
-        return dateExecuted;
-    }
-
-    public void setDateExecuted(Date dateExecuted) {
-        this.dateExecuted = dateExecuted;
-    }
-
     public String getJsonResult() {
         return jsonResult;
     }
@@ -53,12 +45,20 @@ public class ResultModel {
         this.jsonResult = jsonResult;
     }
 
+    public SearchParent getSearchParent() {
+        return searchParent;
+    }
+
+    public void setSearchParent(SearchParent searchParent) {
+        this.searchParent = searchParent;
+    }
+
     @Override
     public String toString() {
-        return "ResultModel{" +
+        return "SearchResult{" +
                 "id=" + id +
                 ", queryUrl='" + queryUrl + '\'' +
-                ", dateExecuted=" + dateExecuted +
+                ", searchParent=" + searchParent +
                 ", jsonResult='" + jsonResult + '\'' +
                 '}';
     }
