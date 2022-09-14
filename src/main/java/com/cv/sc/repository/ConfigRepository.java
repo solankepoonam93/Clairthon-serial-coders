@@ -1,11 +1,12 @@
 package com.cv.sc.repository;
 
+import com.cv.sc.models.Config;
 import com.cv.sc.models.SearchResult;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ResultModelRepository extends CrudRepository<SearchResult, Long> {
+public interface ConfigRepository extends CrudRepository<Config, Long>{
 
-    SearchResult save(SearchResult resultModel);
+    Config findById(long id);
 }

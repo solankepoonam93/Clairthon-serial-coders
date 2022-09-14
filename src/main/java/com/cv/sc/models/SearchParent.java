@@ -14,7 +14,6 @@ public class SearchParent {
 
     private String user;
 
-    @NotNull
     @Temporal(TIMESTAMP)
     private Date modifiedDate;
 

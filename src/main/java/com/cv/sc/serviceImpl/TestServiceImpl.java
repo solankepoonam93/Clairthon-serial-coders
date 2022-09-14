@@ -2,8 +2,11 @@ package com.cv.sc.serviceImpl;
 
 import com.cv.sc.framework.AmazonS3Util;
 import com.cv.sc.models.ApiResponse;
+import com.cv.sc.models.SearchParent;
 import com.cv.sc.models.SearchResult;
-import com.cv.sc.repository.ResultModelRepository;
+import com.cv.sc.repository.ConfigRepository;
+import com.cv.sc.repository.SearchParentRepository;
+import com.cv.sc.repository.SearchResultRepository;
 import com.cv.sc.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +29,14 @@ import java.util.Date;
 public class TestServiceImpl implements TestService {
 
     @Autowired
-    private ResultModelRepository resultModelRepository;
+    private SearchResultRepository resultModelRepository;
+
+    @Autowired
+    private SearchParentRepository searchParentRepository;
+
+    @Autowired
+    private ConfigRepository configRepository;
+
     @Override
     public ApiResponse saveResult(SearchResult resultModel) {
 
@@ -66,6 +76,9 @@ public class TestServiceImpl implements TestService {
         String urlPath = amazons3.uploadSingleFileToS3Bucket("serielcoders", multipartFile );
         System.out.println("URL: "+urlPath);
         resultModel.setJsonResult(urlPath);
+
+        SearchParent searchParent= searchParentRepository.findById(1);
+        resultModel.setSearchParent(searchParent);
         resultModelRepository.save(resultModel);
         return new ApiResponse(HttpStatus.OK, "Success", resultModel);
     }

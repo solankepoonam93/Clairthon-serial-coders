@@ -13,7 +13,7 @@ public class Config {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String congigName;
+    private String configName;
 
     private String codeSearchKeywords;
 
@@ -39,12 +39,12 @@ public class Config {
         this.id = id;
     }
 
-    public String getCongigName() {
-        return congigName;
+    public String getConfigName() {
+        return configName;
     }
 
-    public void setCongigName(String congigName) {
-        this.congigName = congigName;
+    public void setConfigName(String congigName) {
+        this.configName = congigName;
     }
 
     public String getCodeSearchKeywords() {
@@ -107,7 +107,7 @@ public class Config {
     public String toString() {
         return "Config{" +
                 "id=" + id +
-                ", congigName='" + congigName + '\'' +
+                ", congigName='" + configName + '\'' +
                 ", codeSearchKeywords='" + codeSearchKeywords + '\'' +
                 ", userSearchKeywords='" + userSearchKeywords + '\'' +
                 ", repositoryNames='" + repositoryNames + '\'' +
