@@ -6,6 +6,9 @@ import org.apache.http.HttpStatus;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Date;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +58,7 @@ public class HttpClientTest {
 
     private Map<String, String> getHeaderMapContainingToken() {
         Map<String, String> headers = new HashMap<>();
+        headers.put("Accept", "application/vnd.github+json");
         headers.put("Authorization: Bearer ", authToken);
         return headers;
     }

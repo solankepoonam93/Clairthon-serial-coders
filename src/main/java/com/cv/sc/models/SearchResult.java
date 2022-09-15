@@ -2,30 +2,28 @@ package com.cv.sc.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
-
-import static javax.persistence.TemporalType.TIMESTAMP;
 
 @Entity
 public class SearchResult {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String queryUrl;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private SearchParent searchParent;
 
+    @Column(length = 512)
     private String jsonResult;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

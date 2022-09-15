@@ -28,12 +28,10 @@ import java.util.List;
 public class AmazonS3Util {
 
 	private static final String SUFFIX = "/";
-	private static String bucketName = "serielcoders";
 	private static final Logger log = LogManager.getLogger(AmazonS3Util.class);
 	public static final String AWS_S3_BUCKET = "";
 	public static final String AWS_ACCESS_KEY = "";
 	public static final String AWS_SECRET_KEY = "";
-
 	public static AmazonS3 amazonS3;
 
 
@@ -46,7 +44,7 @@ public class AmazonS3Util {
 				.withRegion(Regions.AP_SOUTH_1).build();
 	}
 
-	public static String uploadSingleFileToS3Bucket(final String bucketName, MultipartFile file) {
+	public String uploadSingleFileToS3Bucket(MultipartFile file) {
 
 		BasicAWSCredentials awsCredentials = new BasicAWSCredentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
 		amazonS3 = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
@@ -103,7 +101,7 @@ public class AmazonS3Util {
 		log.info("Download file" + s3FileName);
 		log.info("Download dest file" + destFileName);
 		try {
-			GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, s3FileName);
+			GetObjectRequest getObjectRequest = new GetObjectRequest(AWS_S3_BUCKET, s3FileName);
 			S3Object s3Object = amazonS3.getObject(getObjectRequest);
 
 			InputStream inputStream = s3Object.getObjectContent();

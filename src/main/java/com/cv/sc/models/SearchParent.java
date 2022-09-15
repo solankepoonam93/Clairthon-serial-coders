@@ -10,7 +10,7 @@ import static javax.persistence.TemporalType.TIMESTAMP;
 public class SearchParent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String user;
 
@@ -20,14 +20,14 @@ public class SearchParent {
     private String status;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Config config;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
