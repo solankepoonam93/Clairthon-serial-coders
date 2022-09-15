@@ -36,8 +36,9 @@ public class HttpClient {
             HttpHeaders httpHeaders = new HttpHeaders();
             for(Map.Entry<String, String> entry: headers.entrySet()) {
                 if(entry.getValue()!=null) {
-                    if(entry.getKey().contains("Authorization")) { // TODO
-                        httpHeaders.setAuthorization("Authorization: Bearer "+ entry.getValue());
+                    if(entry.getKey().contains("Authorization")) {
+                        //httpHeaders.setAuthorization("Authorization: Bearer "+ entry.getValue());
+                        httpHeaders.set("Authorization","Bearer "+ entry.getValue());
                     } else {
                         httpHeaders.set(entry.getKey(), entry.getValue());
                     }

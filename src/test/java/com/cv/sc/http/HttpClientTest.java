@@ -2,10 +2,11 @@ package com.cv.sc.http;
 
 import com.cv.sc.util.GitHubEndpoints;
 import com.google.api.client.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,15 +16,21 @@ import java.util.Map;
  */
 public class HttpClientTest {
 
+
+    private String authToken =System.getenv("AuthToken");
     @Test
     public void testHttpClient() {
-        HttpClient httpClient = getHttpClient(GitHubEndpoints.USER_SEARCH_ENDPOINT, getQueryParamForUserSearch(), getHeaderMapContainingToken(), HttpMethod.GET);
+        HttpClient httpClient = getHttpClient(getQueryParamForUserSearch(),
+                Collections.emptyMap(), getHeaderMapContainingToken(), HttpMethod.GET);
         Assert.assertNotNull(httpClient);
     }
 
     @Test
     public void testSearchUser() throws Exception {
-        HttpClient httpClient = getHttpClient(GitHubEndpoints.USER_SEARCH_ENDPOINT, getQueryParamForUserSearch(), getHeaderMapContainingToken(), HttpMethod.GET);
+        HttpClient httpClient = getHttpClient(getQueryParamForUserSearch(),
+                Collections.emptyMap(),
+                getHeaderMapContainingToken(),
+                HttpMethod.GET);
         HttpResponse httpResponse = httpClient.exchange();
         Assert.assertEquals(200, httpResponse.getStatusCode());
 
@@ -42,15 +49,101 @@ public class HttpClientTest {
                 .build();
     }
 
-    private Map<String, String> getQueryParamForUserSearch() {
-        Map<String, String> params = new HashMap<>();
-        params.put("q", "solankepoonam in:user");
-        return params;
+    private String getQueryParamForUserSearch() {
+        return  GitHubEndpoints.USER_SEARCH_ENDPOINT + "?q=solankepoonam in:user";
     }
 
     private Map<String, String> getHeaderMapContainingToken() {
         Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization: Bearer ", "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"); //TODO pass as env var
+        headers.put("Authorization: Bearer ", authToken);
         return headers;
+    }
+
+    @Test
+    public void testCodeSearch() throws Exception {
+
+        HttpClient httpClient = getHttpClient(getQueryParamForCodeSearch(),
+                Collections.emptyMap(),
+                getAuthHeader(authToken),
+                HttpMethod.GET);
+        HttpResponse codeResponse = httpClient.exchange();
+        Assert.assertEquals(200, codeResponse.getStatusCode());
+
+        String userSearchJson = codeResponse.parseAsString();
+        Assert.assertNotNull(userSearchJson);
+        Assert.assertTrue(userSearchJson.contains("CountAboveSixty"));
+        System.out.println(userSearchJson);
+    }
+    private String getQueryParamForCodeSearch() {
+        return GitHubEndpoints.CODE_SEARCH_ENDPOINT + "?q=public class CountAboveSixty";
+    }
+
+    private Map<String, String> getAuthHeader(String authToken) {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization: Bearer ", authToken);
+        return headers;
+    }
+    @Test
+    public void testRepoSearch() throws Exception {
+        HttpClient httpClient = getHttpClient(getQueryParamForRepoSearch(),
+                Collections.emptyMap(),
+                getAuthHeader(authToken),
+                HttpMethod.GET);
+        HttpResponse response = httpClient.exchange();
+        Assert.assertNotNull(response);
+
+        String responseJson = response.parseAsString();
+        Assert.assertTrue(responseJson.contains("AmrutaChichani"));
+        Assert.assertTrue(response.isSuccessStatusCode());
+        System.out.println(responseJson);
+    }
+    private String getQueryParamForRepoSearch() {
+       return GitHubEndpoints.REPO_SEARCH_ENDPOINT + "?q=backend-bookstore user:AmrutaChichani";
+
+    }
+
+    @Test
+    public void testFileSearch() throws Exception {
+        HttpClient httpClient = getHttpClient(getFileSearchQuery(),
+                Collections.emptyMap(),
+                getAuthHeader(authToken),
+                HttpMethod.GET);
+        HttpResponse response = httpClient.exchange();
+        Assert.assertNotNull(response);
+
+        String responseJson = response.parseAsString();
+        Assert.assertEquals(HttpStatus.SC_OK,response.getStatusCode());
+        Assert.assertTrue(responseJson.contains("CountAboveSixty"));
+        System.out.println(responseJson);
+    }
+
+    private String getFileSearchQuery(){
+        return GitHubEndpoints.CODE_SEARCH_ENDPOINT+"?q= filename:CountAboveSixty";
+    }
+
+    @Test
+    public void testCollectiveSearch() throws Exception {
+        Map<String, String> queries = getQuerysForAll("SortByNamePercent");
+        Map<String,HttpResponse> responses = new HashMap<>();
+        HttpClient httpClient;
+        for( Map.Entry<String, String> entry : queries.entrySet()) {
+            httpClient = getHttpClient(entry.getValue(),
+                    Collections.emptyMap(),getAuthHeader(authToken),HttpMethod.GET);
+            responses.put(entry.getKey(), httpClient.exchange());
+        }
+        Assert.assertNotNull(responses);
+        Assert.assertFalse(responses.isEmpty());
+        for( Map.Entry<String, HttpResponse> entry : responses.entrySet()) {
+            System.out.println(entry.getKey() + ":" + entry.getValue().parseAsString());
+        }
+    }
+
+    private Map<String, String> getQuerysForAll(String keyword) {
+        Map<String, String> queryMap= new HashMap<>();
+        queryMap.put("code",GitHubEndpoints.CODE_SEARCH_ENDPOINT + "?q=" + keyword);
+        queryMap.put("user", GitHubEndpoints.USER_SEARCH_ENDPOINT + "?q=" + keyword + " in:user");
+        queryMap.put("repo", GitHubEndpoints.REPO_SEARCH_ENDPOINT + "?q=" + keyword);
+        queryMap.put("filename", GitHubEndpoints.CODE_SEARCH_ENDPOINT + "?q= filename:" + keyword);
+        return queryMap;
     }
 }
