@@ -11,7 +11,7 @@ public class Config {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String configName;
 
@@ -31,11 +31,11 @@ public class Config {
     @Temporal(TIMESTAMP)
     private Date modifiedDate;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

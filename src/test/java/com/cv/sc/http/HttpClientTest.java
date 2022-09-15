@@ -5,7 +5,9 @@ import com.google.api.client.http.HttpResponse;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +52,48 @@ public class HttpClientTest {
 
     private Map<String, String> getHeaderMapContainingToken() {
         Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization: Bearer ", "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"); //TODO pass as env var
+        headers.put("Accept", "application/vnd.github+json");
+        headers.put("Authorization", "Bearer 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"); //TODO pass as env var
         return headers;
+    }
+
+    @Test
+    public void testCodeSearch() throws Exception {
+        HttpClient httpClient = getHttpClient(GitHubEndpoints.CODE_SEARCH_ENDPOINT/*+"?q=package com.test.java8"*/,
+                getQueryParamForCodeSearch(),
+                getHeaderMapContainingToken(),
+                HttpMethod.GET);
+        HttpResponse codeResponse = httpClient.exchange();
+        Assert.assertEquals(200, codeResponse.getStatusCode());
+
+        String userSearchJson = codeResponse.parseAsString();
+        Assert.assertNotNull(userSearchJson);
+        Assert.assertTrue(userSearchJson.contains("HttpClient"));
+        System.out.println(userSearchJson);
+    }
+    private Map<String , String> getQueryParamForCodeSearch() {
+        Map<String, String> param = new HashMap<>();
+        param.put("q", "public HttpClient");
+        return param;
+    }
+
+    @Test
+    public void testRepoSearch() throws Exception {
+        HttpClient httpClient = getHttpClient(GitHubEndpoints.REPO_SEARCH_ENDPOINT,
+                getQueryParamForRepoSearch(),
+                getHeaderMapContainingToken(),
+                HttpMethod.GET);
+        HttpResponse response = httpClient.exchange();
+        Assert.assertNotNull(response);
+
+        String responseJson = response.parseAsString();
+        Assert.assertTrue(responseJson.contains("AmrutaChichani"));
+        Assert.assertTrue(response.isSuccessStatusCode());
+        System.out.println(responseJson);
+    }
+    private Map<String , String> getQueryParamForRepoSearch() {
+        Map<String, String> param = new HashMap<>();
+        param.put("q","backend-bookstore user:AmrutaChichani");
+        return param;
     }
 }

@@ -36,11 +36,7 @@ public class HttpClient {
             HttpHeaders httpHeaders = new HttpHeaders();
             for(Map.Entry<String, String> entry: headers.entrySet()) {
                 if(entry.getValue()!=null) {
-                    if(entry.getKey().contains("Authorization")) { // TODO
-                        httpHeaders.setAuthorization("Authorization: Bearer "+ entry.getValue());
-                    } else {
-                        httpHeaders.set(entry.getKey(), entry.getValue());
-                    }
+                    httpHeaders.set(entry.getKey(), entry.getValue());
                 }
             }
             httpRequest.setHeaders(httpHeaders);
@@ -57,6 +53,7 @@ public class HttpClient {
                 }
             }
             httpRequest = requestFactory.buildGetRequest(genericUrl);
+            System.out.println(genericUrl);
         } else if(httpMethod.equals(HttpMethod.POST)) {
             httpRequest = requestFactory.buildPostRequest(new GenericUrl(url), new UrlEncodedContent(queryParams));
         }
