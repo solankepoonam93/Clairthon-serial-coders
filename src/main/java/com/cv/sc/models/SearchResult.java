@@ -17,10 +17,21 @@ public class SearchResult {
     private SearchParent searchParent;
 
     @Column(length = 512)
-    private String jsonResult;
+    private String s3FileUrl;
+
+    @Column
+    private String fileName;
 
     public Long getId() {
         return id;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public void setId(Long id) {
@@ -35,12 +46,12 @@ public class SearchResult {
         this.queryUrl = queryUrl;
     }
 
-    public String getJsonResult() {
-        return jsonResult;
+    public String getS3FileUrl() {
+        return s3FileUrl;
     }
 
-    public void setJsonResult(String jsonResult) {
-        this.jsonResult = jsonResult;
+    public void setS3FileUrl(String s3FileUrl) {
+        this.s3FileUrl = s3FileUrl;
     }
 
     public SearchParent getSearchParent() {
@@ -57,7 +68,7 @@ public class SearchResult {
                 "id=" + id +
                 ", queryUrl='" + queryUrl + '\'' +
                 ", searchParent=" + searchParent +
-                ", jsonResult='" + jsonResult + '\'' +
+                ", jsonResult='" + s3FileUrl + '\'' +
                 '}';
     }
 }

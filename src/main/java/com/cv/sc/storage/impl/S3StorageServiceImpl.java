@@ -5,6 +5,7 @@ import com.cv.sc.framework.AmazonS3Util;
 import com.cv.sc.models.SearchResult;
 import com.cv.sc.storage.StorageService;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -25,17 +26,22 @@ public class S3StorageServiceImpl implements StorageService {
             throw new IllegalTypeException("Result to store must be of Type SearchResult");
         }
         SearchResult searchResult = (SearchResult) result;
-        String fileContent = searchResult.getJsonResult();
+        String fileContent = searchResult.getS3FileUrl();
         String fileName = "Json_Result_" + searchResult.getSearchParent().getId() + "_" + System.currentTimeMillis()+".json";
         String urlPath = amazons3Util.uploadSingleFileToS3Bucket(fileName, fileContent);
 
-        searchResult.setJsonResult(urlPath);
+        searchResult.setS3FileUrl(urlPath);
+        searchResult.setFileName(fileName);
         searchResult = (SearchResult) dbStorageService.save(searchResult);
         return searchResult;
     }
 
     @Override
-    public Object fetch(Class entityClass, Object id) {
-        return null; //TODO fetch from S3 and return
+    public Object fetch(Class entityClass, Object id) throws IOException {
+        if(!entityClass.equals(String.class) || !(id instanceof String)) {
+            throw new IllegalTypeException("Entity Class and id must be of type String while fetching a file from S3.");
+        }
+        String sourceFileName = (String) id;
+        return amazons3Util.readFileFromS3(sourceFileName);
     }
 }

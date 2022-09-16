@@ -8,6 +8,7 @@ import com.cv.sc.storage.impl.S3StorageServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
@@ -15,7 +16,7 @@ import java.util.Date;
  * Created By: bhushan.karmarkar12@gmail.com
  * Date: 15/09/22
  */
-public class StorageTest {
+public class StorageTests {
 
     public static final String SAMPLE_RESULT = "{\n" +
             "    \"total_count\": 1,\n" +
@@ -31,7 +32,7 @@ public class StorageTest {
             "}";
 
     @Test
-    public void testS3storage() throws UnsupportedEncodingException {
+    public void testDBStorage() throws UnsupportedEncodingException {
         StorageService dbStorageService = new DBStorageServiceImpl();
 
         // Save config in db
@@ -64,21 +65,29 @@ public class StorageTest {
         SearchResult searchResult = getSearchResult(searchParent);
         dbStorageService.save(searchResult);
 
-        searchResult.setJsonResult(SAMPLE_RESULT); // to avoid truncation
+        searchResult.setS3FileUrl(SAMPLE_RESULT); // to avoid truncation
         SearchResult saved = (SearchResult) storageService.save(searchResult);
 
         Assert.assertTrue(saved instanceof SearchResult);
         Assert.assertNotNull(saved.getId());
-        Assert.assertNotEquals(saved.getJsonResult(), SAMPLE_RESULT);
+        Assert.assertNotEquals(saved.getS3FileUrl(), SAMPLE_RESULT);
         Assert.assertEquals(saved.getQueryUrl(), searchResult.getQueryUrl());
-        Assert.assertNotNull(saved.getJsonResult());
+        Assert.assertNotNull(saved.getS3FileUrl());
+    }
+
+    @Test
+    public void testS3Fetch() throws IOException {
+        String fileName = "Json_Result_28_1663316839640.json";
+        StorageService storageService = new S3StorageServiceImpl();
+        String fileContent = (String) storageService.fetch(String.class, fileName);
+        Assert.assertNotNull(fileContent);
+        Assert.assertTrue(fileContent.length() > 200);
     }
 
     private SearchResult getSearchResult(SearchParent searchParent) {
         SearchResult searchResult = new SearchResult();
         searchResult.setQueryUrl("https://api.github.com/search/users?q=solankepoonam in:user");
         searchResult.setSearchParent(searchParent);
-
         return searchResult;
     }
 
