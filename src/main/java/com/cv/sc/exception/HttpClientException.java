@@ -1,4 +1,4 @@
-package com.cv.sc.http;
+package com.cv.sc.exception;
 
 /**
  * Created By: bhushan.karmarkar12@gmail.com

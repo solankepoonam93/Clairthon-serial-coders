@@ -1,7 +1,13 @@
 # clairthon-serial-coders
 
-#database prerequisites
-Need to install MySQL. 
-And create database using query: create database myDB;
-In application.properties, database credentials must be valid.
-All table will be created automatically.
+**Database Prerequisites**
+<li>Please make sure you have mysql installed on your machine and the service is running.
+<li>Start mysql client from console.
+<li>Create database using this SQL query: "create database myDB;"
+<li>In META-INF/persistence.xm, provide valid database credentials.
+<li>Tables will be created automatically when tests are executed.
+
+<br><br>
+**Executing Unit Tests**
+<li>Set the AWS_ACCESS_KEY and AWS_SECRET_KEY as environment variables</li>
+<li>In intellij, you can configure environment variables from -> Edit Configuration</li>

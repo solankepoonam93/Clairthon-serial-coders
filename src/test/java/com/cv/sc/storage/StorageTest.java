@@ -37,15 +37,15 @@ public class StorageTest {
         // Save config in db
         Config config = getConfig();
         dbStorageService.save(config);
-        Assert.assertTrue(config.getId() != null);
+        Assert.assertNotNull(config.getId());
         // save search parent in db
         SearchParent searchParent = getSearchParent(config);
         dbStorageService.save(searchParent);
-        Assert.assertTrue(searchParent.getId() != null);
+        Assert.assertNotNull(searchParent.getId());
 
         SearchResult searchResult = getSearchResult(searchParent);
         dbStorageService.save(searchResult);
-        Assert.assertTrue(searchResult.getId() != null);
+        Assert.assertNotNull(searchResult.getId());
     }
 
     @Test
@@ -73,7 +73,6 @@ public class StorageTest {
         Assert.assertEquals(saved.getQueryUrl(), searchResult.getQueryUrl());
         Assert.assertNotNull(saved.getJsonResult());
     }
-
 
     private SearchResult getSearchResult(SearchParent searchParent) {
         SearchResult searchResult = new SearchResult();
