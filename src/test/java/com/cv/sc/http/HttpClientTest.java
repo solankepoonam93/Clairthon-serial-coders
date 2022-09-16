@@ -5,10 +5,6 @@ import com.google.api.client.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Date;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +55,7 @@ public class HttpClientTest {
     private Map<String, String> getHeaderMapContainingToken() {
         Map<String, String> headers = new HashMap<>();
         headers.put("Accept", "application/vnd.github+json");
-        headers.put("Authorization: Bearer ", authToken);
+        headers.put("Authorization","Bearer "+ authToken);
         return headers;
     }
 
@@ -68,7 +64,7 @@ public class HttpClientTest {
 
         HttpClient httpClient = getHttpClient(getQueryParamForCodeSearch(),
                 Collections.emptyMap(),
-                getAuthHeader(authToken),
+                getHeaderMapContainingToken(),
                 HttpMethod.GET);
         HttpResponse codeResponse = httpClient.exchange();
         Assert.assertEquals(200, codeResponse.getStatusCode());
@@ -82,16 +78,11 @@ public class HttpClientTest {
         return GitHubEndpoints.CODE_SEARCH_ENDPOINT + "?q=public class CountAboveSixty";
     }
 
-    private Map<String, String> getAuthHeader(String authToken) {
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization: Bearer ", authToken);
-        return headers;
-    }
     @Test
     public void testRepoSearch() throws Exception {
         HttpClient httpClient = getHttpClient(getQueryParamForRepoSearch(),
                 Collections.emptyMap(),
-                getAuthHeader(authToken),
+                getHeaderMapContainingToken(),
                 HttpMethod.GET);
         HttpResponse response = httpClient.exchange();
         Assert.assertNotNull(response);
@@ -110,7 +101,7 @@ public class HttpClientTest {
     public void testFileSearch() throws Exception {
         HttpClient httpClient = getHttpClient(getFileSearchQuery(),
                 Collections.emptyMap(),
-                getAuthHeader(authToken),
+                getHeaderMapContainingToken(),
                 HttpMethod.GET);
         HttpResponse response = httpClient.exchange();
         Assert.assertNotNull(response);
@@ -127,12 +118,12 @@ public class HttpClientTest {
 
     @Test
     public void testCollectiveSearch() throws Exception {
-        Map<String, String> queries = getQuerysForAll("SortByNamePercent");
+        Map<String, String> queries = getQuerysForAll("CreationPathController");
         Map<String,HttpResponse> responses = new HashMap<>();
         HttpClient httpClient;
         for( Map.Entry<String, String> entry : queries.entrySet()) {
             httpClient = getHttpClient(entry.getValue(),
-                    Collections.emptyMap(),getAuthHeader(authToken),HttpMethod.GET);
+                    Collections.emptyMap(), getHeaderMapContainingToken(), HttpMethod.GET);
             responses.put(entry.getKey(), httpClient.exchange());
         }
         Assert.assertNotNull(responses);
