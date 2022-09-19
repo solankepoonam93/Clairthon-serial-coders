@@ -1,7 +1,7 @@
 package com.cv.sc.pipeline;
 
+import com.cv.sc.exception.HttpClientException;
 import com.cv.sc.http.HttpClient;
-import com.cv.sc.http.HttpClientException;
 import com.cv.sc.http.HttpMethod;
 import com.cv.sc.models.Config;
 import com.cv.sc.util.Constants;

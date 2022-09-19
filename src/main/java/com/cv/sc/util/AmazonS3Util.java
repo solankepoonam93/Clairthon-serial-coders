@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.cv.sc.framework;
+package com.cv.sc.util;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;

@@ -1,7 +1,7 @@
 package com.cv.sc.storage.impl;
 
 import com.cv.sc.exception.IllegalTypeException;
-import com.cv.sc.framework.AmazonS3Util;
+import com.cv.sc.util.AmazonS3Util;
 import com.cv.sc.models.SearchResult;
 import com.cv.sc.storage.StorageService;
 
