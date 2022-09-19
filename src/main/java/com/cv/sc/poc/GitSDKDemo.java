@@ -9,10 +9,4 @@ public class GitSDKDemo {
 
         // try something here
     }
-
-    /*private GitHub connect() throws IOException {
-        // If you don't specify the GitHub user id then the sdk will retrieve it via /user endpoint
-        GitHub github = new GitHubBuilder().withOAuthToken("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").build();
-        return github;
-    }*/
 }

@@ -1,5 +1,6 @@
 package com.cv.sc.http;
 
+import com.cv.sc.exception.HttpClientException;
 import com.google.api.client.http.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
 
