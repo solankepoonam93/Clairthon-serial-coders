@@ -1,4 +1,4 @@
-package com.cv.sc.models;
+package com.cv.sc.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -7,7 +7,7 @@ import java.util.Date;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 @Entity
-public class SearchParent {
+public class SearchParent implements SCEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

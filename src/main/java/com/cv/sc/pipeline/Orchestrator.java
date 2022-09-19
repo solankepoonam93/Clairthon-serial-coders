@@ -1,6 +1,6 @@
 package com.cv.sc.pipeline;
 
-import com.cv.sc.models.Config;
+import com.cv.sc.model.Config;
 
 import java.util.Map;
 

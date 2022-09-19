@@ -6,6 +6,7 @@ import com.cv.sc.storage.StorageService;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.io.IOException;
 
 public class DBStorageServiceImpl implements StorageService {
 
@@ -31,4 +32,15 @@ public class DBStorageServiceImpl implements StorageService {
     public Object fetch(Class entityClass, Object id) {
         return entityManager.find(entityClass, id);
     }
+
+    @Override
+    public Object delete(Class entityClass, Object pk) throws IOException {
+        return null;
+    }
+
+    @Override
+    public Object update(Object value) throws IOException {
+        return null;
+    }
+
 }

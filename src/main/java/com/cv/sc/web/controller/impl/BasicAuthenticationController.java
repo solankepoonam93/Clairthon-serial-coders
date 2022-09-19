@@ -1,8 +1,9 @@
 package com.cv.sc.web.controller.impl;
 
 import com.cv.sc.cache.TokenCache;
+import com.cv.sc.model.SCEntity;
 import com.cv.sc.web.controller.AuthenticationController;
-import com.cv.sc.models.APIResponse;
+import com.cv.sc.model.APIResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,7 @@ import static com.cv.sc.web.filter.utils.WebUtils.buildAPIResponse;
  */
 @RestController
 @RequestMapping("/auth")
-public class BasicAuthenticationController implements AuthenticationController {
+public class BasicAuthenticationController<T extends SCEntity> implements AuthenticationController {
 
     @GetMapping(value = "/basic", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @Override

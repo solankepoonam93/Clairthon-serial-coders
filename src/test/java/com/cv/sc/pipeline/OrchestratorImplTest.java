@@ -1,6 +1,6 @@
 package com.cv.sc.pipeline;
 
-import com.cv.sc.models.Config;
+import com.cv.sc.model.Config;
 import org.junit.Assert;
 import org.junit.Test;
 

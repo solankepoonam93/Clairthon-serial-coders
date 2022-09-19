@@ -1,6 +1,6 @@
 package com.cv.sc.web.controller;
 
-import com.cv.sc.models.APIResponse;
+import com.cv.sc.model.APIResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

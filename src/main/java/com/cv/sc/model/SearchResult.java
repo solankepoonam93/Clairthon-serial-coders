@@ -1,10 +1,10 @@
-package com.cv.sc.models;
+package com.cv.sc.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-public class SearchResult {
+public class SearchResult implements SCEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

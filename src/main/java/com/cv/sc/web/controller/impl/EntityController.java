@@ -1,0 +1,49 @@
+package com.cv.sc.web.controller.impl;
+
+import com.cv.sc.model.SCEntity;
+import com.cv.sc.storage.StorageService;
+import com.cv.sc.storage.impl.DBStorageServiceImpl;
+import com.cv.sc.web.utill.EntityTypes;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
+/**
+ * Created By: bhushan.karmarkar12@gmail.com
+ * Date: 19/09/22
+ */
+@RestController
+@RequestMapping("/dao")
+public class EntityController<T extends SCEntity> implements SCEntity {
+
+    private StorageService dbStorageService;
+
+    public EntityController() {
+        this.dbStorageService = new DBStorageServiceImpl();
+    }
+
+    @PostMapping(path = "/persist", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public T persist(T entity) throws UnsupportedEncodingException {
+        entity = (T) dbStorageService.save(entity);
+        return entity;
+    }
+
+    @GetMapping(path = "/fetch/{entityName}/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public T fetch(@PathVariable Long id, @PathVariable String entityName) throws IOException {
+        Class entityClass = EntityTypes.getEntityClass(entityName);
+        return (T) dbStorageService.fetch(entityClass, id);
+    }
+
+    @GetMapping(path = "/delete/{entityName}/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public T delete(@PathVariable Long id, @PathVariable String entityName) throws IOException {
+        Class entityClass = EntityTypes.getEntityClass(entityName);
+        return (T) dbStorageService.delete(entityClass, id);
+    }
+
+    @PostMapping(path = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public T update(T value) throws IOException {
+        return (T) dbStorageService.update(value);
+    }
+}

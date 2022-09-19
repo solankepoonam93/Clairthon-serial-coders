@@ -1,7 +1,7 @@
 package com.cv.sc.web.controller.impl;
 
-import com.cv.sc.models.APIResponse;
-import com.cv.sc.models.Config;
+import com.cv.sc.model.APIResponse;
+import com.cv.sc.model.Config;
 import com.cv.sc.web.controller.SCController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

@@ -1,4 +1,4 @@
-package com.cv.sc.models;
+package com.cv.sc.model;
 
 import org.springframework.http.HttpStatus;
 
@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
  * Created By: bhushan.karmarkar12@gmail.com
  * Date: 19/09/22
  */
-public class APIResponse {
+public class APIResponse implements SCEntity {
     private HttpStatus responseStatus;
     private Object response;
     private String errorMessage;

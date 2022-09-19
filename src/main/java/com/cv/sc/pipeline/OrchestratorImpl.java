@@ -3,7 +3,7 @@ package com.cv.sc.pipeline;
 import com.cv.sc.exception.HttpClientException;
 import com.cv.sc.http.HttpClient;
 import com.cv.sc.http.HttpMethod;
-import com.cv.sc.models.Config;
+import com.cv.sc.model.Config;
 import com.cv.sc.util.Constants;
 import com.cv.sc.util.GitHubEndpoints;
 import com.cv.sc.util.UserUtils;

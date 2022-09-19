@@ -5,7 +5,11 @@ import java.io.UnsupportedEncodingException;
 
 public interface StorageService {
 
-    public Object save(Object o) throws UnsupportedEncodingException;
+    Object save(Object o) throws UnsupportedEncodingException;
 
-    public Object fetch(Class entityClass, Object pk) throws IOException;
+    Object fetch(Class entityClass, Object pk) throws IOException;
+
+    Object delete(Class entityClass, Object pk) throws IOException;
+
+    Object update(Object value) throws IOException;
 }

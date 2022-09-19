@@ -1,8 +1,8 @@
 package com.cv.sc.storage;
 
-import com.cv.sc.models.Config;
-import com.cv.sc.models.SearchParent;
-import com.cv.sc.models.SearchResult;
+import com.cv.sc.model.Config;
+import com.cv.sc.model.SearchParent;
+import com.cv.sc.model.SearchResult;
 import com.cv.sc.storage.impl.DBStorageServiceImpl;
 import com.cv.sc.storage.impl.S3StorageServiceImpl;
 import org.junit.Assert;

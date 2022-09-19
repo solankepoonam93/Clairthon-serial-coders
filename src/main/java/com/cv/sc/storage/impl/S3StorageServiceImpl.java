@@ -2,7 +2,7 @@ package com.cv.sc.storage.impl;
 
 import com.cv.sc.exception.IllegalTypeException;
 import com.cv.sc.util.AmazonS3Util;
-import com.cv.sc.models.SearchResult;
+import com.cv.sc.model.SearchResult;
 import com.cv.sc.storage.StorageService;
 
 import java.io.IOException;
@@ -43,5 +43,15 @@ public class S3StorageServiceImpl implements StorageService {
         }
         String sourceFileName = (String) id;
         return amazons3Util.readFileFromS3(sourceFileName);
+    }
+
+    @Override
+    public Object delete(Class entityClass, Object pk) throws IOException {
+        return null;
+    }
+
+    @Override
+    public Object update(Object value) throws IOException {
+        return null;
     }
 }

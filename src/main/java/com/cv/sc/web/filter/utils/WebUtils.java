@@ -1,6 +1,6 @@
 package com.cv.sc.web.filter.utils;
 
-import com.cv.sc.models.APIResponse;
+import com.cv.sc.model.APIResponse;
 import org.springframework.http.HttpStatus;
 
 /**
