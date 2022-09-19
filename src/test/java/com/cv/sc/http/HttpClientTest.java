@@ -59,7 +59,7 @@ public class HttpClientTest {
         return headers;
     }
 
-    @Test
+    /*@Test
     public void testCodeSearch() throws Exception {
 
         HttpClient httpClient = getHttpClient(getQueryParamForCodeSearch(),
@@ -140,5 +140,5 @@ public class HttpClientTest {
         queryMap.put("repo", GitHubEndpoints.REPO_SEARCH_ENDPOINT + "?q=" + keyword);
         queryMap.put("filename", GitHubEndpoints.CODE_SEARCH_ENDPOINT + "?q= filename:" + keyword);
         return queryMap;
-    }
+    }*/
 }

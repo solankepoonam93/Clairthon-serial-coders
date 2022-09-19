@@ -18,6 +18,8 @@ public class OrchestratorImplTest {
         Assert.assertNotNull(result);
         Assert.assertTrue(result.containsKey("CodeResult"));
         Assert.assertTrue(result.containsKey("UserResult"));
+        Assert.assertTrue(result.containsKey("FileResult"));
+      /*  Assert.assertTrue(result.containsKey("RepoResult"));*/
     }
 
     private Config getConfig() {
@@ -27,6 +29,7 @@ public class OrchestratorImplTest {
         config.setCodeSearchKeywords("CountAboveSixty");
         config.setCustomerName("Amruta");
         config.setUserSearchKeywords("AmrutaChichani");
+        config.setRepositoryNames("AmrutaChichani/Java_8_demo_project");
         return config;
     }
 }
