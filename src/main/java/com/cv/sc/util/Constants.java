@@ -7,5 +7,5 @@ public class Constants {
     public static final String QUERY = "q";
     public static final String QUERY_QUALIFIER_IN = "in";
     public static final String QUERY_QUALIFIER_USER = "user";
-
+    public static final String QUERY_QUALIFIER_FILENAME = "filename";
 }

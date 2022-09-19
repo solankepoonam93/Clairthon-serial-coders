@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class OrchestratorImpl implements Orchestrator{
 
-    UserUtils userUtils = new UserUtils();
+    private UserUtils userUtils = new UserUtils();
 
     @Override
     public Map<String, String> search(Config config) {
@@ -26,12 +26,20 @@ public class OrchestratorImpl implements Orchestrator{
         Map<String, String> codeSearchResult = getCodeSearchResult(config);
         //User search
         Map<String, String> userSearchResult = getUserSearchResult(config);
+        //fileSearch
+        Map<String, String> fileSearchResult = getFileSearchResult(config);
         //Repo Search
+        /*//uncomment when need to try for repo serach
+         Map<String, String> repoSearchResult = getRepoSearchResult(config);*/
+
         //Package search
 
         //combine the results of all in one map
         responseMap.putAll(codeSearchResult);
         responseMap.putAll(userSearchResult);
+        responseMap.putAll(fileSearchResult);
+        /*responseMap.putAll(repoSearchResult);*/
+        //need to refactor this once model for final result JSON is ready
         return responseMap;
     }
 
@@ -79,6 +87,52 @@ public class OrchestratorImpl implements Orchestrator{
             String userResponseString = userResponse.parseAsString();
             System.out.println(userResponseString);
             responseMap.put("UserResult",userResponseString);
+        } catch (HttpClientException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return responseMap;
+    }
+
+    private Map<String, String> getFileSearchResult(Config config) {
+        Map<String,String> params = new HashMap<>();
+        params.put(Constants.QUERY, null);
+        params.put(Constants.QUERY_QUALIFIER_FILENAME,config.getCodeSearchKeywords());
+
+        String fileRequestUrl= userUtils.getRequestUrlQuery(GitHubEndpoints.CODE_SEARCH_ENDPOINT, params);
+
+        HttpClient fileHttpClient = new HttpClient(fileRequestUrl,
+                Collections.emptyMap(), userUtils.getHeaders(), HttpMethod.GET);
+        HttpResponse fileResponse;
+        Map<String, String> responseMap = new HashMap<>();
+        try {
+            fileResponse = fileHttpClient.exchange();
+            String fileResponseString = fileResponse.parseAsString();
+            System.out.println(fileResponseString);
+            responseMap.put("FileResult",fileResponseString);
+        } catch (HttpClientException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return responseMap;
+    }
+
+    private Map<String, String> getRepoSearchResult(Config config) {
+
+        String repoRequestUrl= userUtils.getRequestUrlQuery(GitHubEndpoints.REPO_SEARCH_ENDPOINT,
+                Map.of(Constants.QUERY, config.getRepositoryNames()));
+
+        HttpClient repoHttpClient = new HttpClient(repoRequestUrl,
+                Collections.emptyMap(), userUtils.getHeaders(), HttpMethod.GET);
+        HttpResponse repoResponse;
+        Map<String, String> responseMap = new HashMap<>();
+        try {
+            repoResponse = repoHttpClient.exchange();
+            String repoResponseString = repoResponse.parseAsString();
+            System.out.println(repoResponseString);
+            responseMap.put("RepoResult",repoResponseString);
         } catch (HttpClientException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
