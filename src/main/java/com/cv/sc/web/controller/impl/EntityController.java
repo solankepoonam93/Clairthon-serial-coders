@@ -23,13 +23,16 @@ public class EntityController<T extends SCEntity> implements SCController {
 
     private StorageService dbStorageService;
 
+    private ObjectMapper objectMapper;
+
     public EntityController() {
         this.dbStorageService = new DBStorageServiceImpl();
+        objectMapper = new ObjectMapper();
     }
 
     @PostMapping(path = "/persist/{entityName}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public T persist(@PathVariable String entityName, @RequestBody String entityJson) throws UnsupportedEncodingException, JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
+
         Class<T> clazz = EntityTypes.getEntityClass(entityName);
         T t = objectMapper.readValue(entityJson, clazz);
         t = (T) dbStorageService.save(t);

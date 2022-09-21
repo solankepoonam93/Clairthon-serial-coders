@@ -1,26 +1,23 @@
-package com.cv.sc.http;
+package com.cv.sc.web.http;
 
-import com.cv.sc.util.GitHubEndpoints;
+import com.cv.sc.http.HttpClient;
+import com.cv.sc.http.HttpMethod;
+import com.cv.sc.web.WebTests;
 import com.google.api.client.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * <br>Created By: bhushan.karmarkar12@gmail.com<br>
  * Date: 12/09/22
  */
-public class HttpClientTest {
+public class HttpClientTest extends WebTests {
 
-
-    private String authToken =System.getenv("AuthToken");
     @Test
     public void testHttpClient() {
         HttpClient httpClient = getHttpClient(getQueryParamForUserSearch(),
-                Collections.emptyMap(), getHeaderMapContainingToken(), HttpMethod.GET);
+                Collections.emptyMap(), getHeaderMapContainingGitToken(), HttpMethod.GET);
         Assert.assertNotNull(httpClient);
     }
 
@@ -28,7 +25,7 @@ public class HttpClientTest {
     public void testSearchUser() throws Exception {
         HttpClient httpClient = getHttpClient(getQueryParamForUserSearch(),
                 Collections.emptyMap(),
-                getHeaderMapContainingToken(),
+                getHeaderMapContainingGitToken(),
                 HttpMethod.GET);
         HttpResponse httpResponse = httpClient.exchange();
         Assert.assertEquals(200, httpResponse.getStatusCode());
@@ -39,25 +36,7 @@ public class HttpClientTest {
         System.out.println(userSearchJson);
     }
 
-    private HttpClient getHttpClient(String url, Map<String, String> queryParam, Map<String, String> headers, HttpMethod httpMethod) {
-        HttpClientBuilder httpClientBuilder = new HttpClientBuilder();
-        return httpClientBuilder.url(url)
-                .queryParams(queryParam)
-                .headers(headers)
-                .httpMethod(httpMethod)
-                .build();
-    }
 
-    private String getQueryParamForUserSearch() {
-        return  GitHubEndpoints.USER_SEARCH_ENDPOINT + "?q=solankepoonam in:user";
-    }
-
-    private Map<String, String> getHeaderMapContainingToken() {
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Accept", "application/vnd.github+json");
-        headers.put("Authorization","Bearer "+ authToken);
-        return headers;
-    }
 
     /*@Test
     public void testCodeSearch() throws Exception {
