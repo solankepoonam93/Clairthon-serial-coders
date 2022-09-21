@@ -16,22 +16,11 @@ public class SearchResult implements SCEntity {
     @ManyToOne
     private SearchParent searchParent;
 
-    @Column(length = 512)
-    private String s3FileUrl;
-
-    @Column
-    private String fileName;
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String jsonResult;
 
     public Long getId() {
         return id;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
     }
 
     public void setId(Long id) {
@@ -46,14 +35,6 @@ public class SearchResult implements SCEntity {
         this.queryUrl = queryUrl;
     }
 
-    public String getS3FileUrl() {
-        return s3FileUrl;
-    }
-
-    public void setS3FileUrl(String s3FileUrl) {
-        this.s3FileUrl = s3FileUrl;
-    }
-
     public SearchParent getSearchParent() {
         return searchParent;
     }
@@ -62,13 +43,21 @@ public class SearchResult implements SCEntity {
         this.searchParent = searchParent;
     }
 
+    public String getJsonResult() {
+        return jsonResult;
+    }
+
+    public void setJsonResult(String jsonResult) {
+        this.jsonResult = jsonResult;
+    }
+
     @Override
     public String toString() {
         return "SearchResult{" +
                 "id=" + id +
                 ", queryUrl='" + queryUrl + '\'' +
                 ", searchParent=" + searchParent +
-                ", jsonResult='" + s3FileUrl + '\'' +
+                ", jsonResult='" + jsonResult + '\'' +
                 '}';
     }
 }
