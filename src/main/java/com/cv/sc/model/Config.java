@@ -15,13 +15,13 @@ public class Config implements SCEntity {
 
     private String configName;
 
-    private String codeSearchKeywords;
+    private String[] codeSearchKeywords;
 
-    private String userSearchKeywords;
+    private String[] userSearchKeywords;
 
-    private String repositoryNames;
+    private String[] repositoryNames;
 
-    private String classNames;
+    private String[] classNames;
 
     private String customerName;
 
@@ -47,35 +47,35 @@ public class Config implements SCEntity {
         this.configName = congigName;
     }
 
-    public String getCodeSearchKeywords() {
+    public String[] getCodeSearchKeywords() {
         return codeSearchKeywords;
     }
 
-    public void setCodeSearchKeywords(String codeSearchKeywords) {
+    public void setCodeSearchKeywords(String[] codeSearchKeywords) {
         this.codeSearchKeywords = codeSearchKeywords;
     }
 
-    public String getUserSearchKeywords() {
+    public String[] getUserSearchKeywords() {
         return userSearchKeywords;
     }
 
-    public void setUserSearchKeywords(String userSearchKeywords) {
+    public void setUserSearchKeywords(String[] userSearchKeywords) {
         this.userSearchKeywords = userSearchKeywords;
     }
 
-    public String getRepositoryNames() {
+    public String[] getRepositoryNames() {
         return repositoryNames;
     }
 
-    public void setRepositoryNames(String repositoryNames) {
+    public void setRepositoryNames(String[] repositoryNames) {
         this.repositoryNames = repositoryNames;
     }
 
-    public String getClassNames() {
+    public String[] getClassNames() {
         return classNames;
     }
 
-    public void setClassNames(String classNames) {
+    public void setClassNames(String[] classNames) {
         this.classNames = classNames;
     }
 

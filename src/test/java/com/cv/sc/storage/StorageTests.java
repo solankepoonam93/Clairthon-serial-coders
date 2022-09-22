@@ -67,7 +67,7 @@ public class StorageTests {
         Config config = new Config();
         config.setModifiedDate(new Date());
         config.setConfigName("TEST_CONFIG");
-        config.setUserSearchKeywords("solankepoonam");
+        config.setUserSearchKeywords(new String[]{"solankepoonam"});
         return config;
     }
 }

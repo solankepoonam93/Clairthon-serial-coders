@@ -56,86 +56,111 @@ public class OrchestratorImpl implements Orchestrator{
     }
 
     private JSONObject getCodeSearchResult(Config config) {
-        String codeRequestUrl= userUtils.getRequestUrlQuery(GitHubEndpoints.CODE_SEARCH_ENDPOINT,
-                Map.of(Constants.QUERY, config.getCodeSearchKeywords()));
+        JSONObject obj=null;
+        JSONArray list = new JSONArray();
+        for(int i=0; i<config.getCodeSearchKeywords().length;i++)
+        {
+            String codeRequestUrl= userUtils.getRequestUrlQuery(GitHubEndpoints.CODE_SEARCH_ENDPOINT,
+                    Map.of(Constants.QUERY, config.getCodeSearchKeywords()[i]));
 
-        HttpClient codeHttpClient = new HttpClient(codeRequestUrl,
-                Collections.emptyMap(), userUtils.getHeaders(), HttpMethod.GET);
-        HttpResponse codeResponse;
-        JSONObject codeResponseJson;
-        try {
-              codeResponse = codeHttpClient.exchange();
-              String codeResponseString = codeResponse.parseAsString();
-              codeResponseJson = getCodeResponseJson(codeResponseString);
-              codeResponseJson.put(Constants.JSON_CODE_COMPLETE_RESPONSE,codeResponseString);
-          } catch (HttpClientException | IOException e) {
-              throw new RuntimeException(e);
-          }
-        return codeResponseJson;
+            HttpClient codeHttpClient = new HttpClient(codeRequestUrl,
+                    Collections.emptyMap(), userUtils.getHeaders(), HttpMethod.GET);
+            HttpResponse codeResponse;
+            JSONObject codeResponseJson;
+            try {
+                codeResponse = codeHttpClient.exchange();
+                String codeResponseString = codeResponse.parseAsString();
+                codeResponseJson = getCodeResponseJson(codeResponseString);
+                codeResponseJson.put(Constants.JSON_CODE_COMPLETE_RESPONSE,codeResponseString);
+                list.add(codeResponseJson);
+            } catch (HttpClientException | IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        obj.put(Constants.JSON_CODE_COMPLETE_RESPONSE,list);
+        return obj;
     }
 
     private JSONObject getUserSearchResult(Config config) {
-        Map<String,String> params = new HashMap<>();
-        params.put(Constants.QUERY, config.getUserSearchKeywords());
-        params.put(Constants.QUERY_QUALIFIER_IN, Constants.QUERY_QUALIFIER_USER);
+        JSONObject obj=null;
+        JSONArray list = new JSONArray();
+        for(int i=0; i<config.getCodeSearchKeywords().length;i++) {
+            Map<String, String> params = new HashMap<>();
+            params.put(Constants.QUERY, config.getUserSearchKeywords()[i]);
+            params.put(Constants.QUERY_QUALIFIER_IN, Constants.QUERY_QUALIFIER_USER);
 
-        String userRequestUrl= userUtils.getRequestUrlQuery(GitHubEndpoints.USER_SEARCH_ENDPOINT, params);
+            String userRequestUrl = userUtils.getRequestUrlQuery(GitHubEndpoints.USER_SEARCH_ENDPOINT, params);
 
-        HttpClient userHttpClient = new HttpClient(userRequestUrl,
-                Collections.emptyMap(), userUtils.getHeaders(), HttpMethod.GET);
-        HttpResponse userResponse;
-        JSONObject userResponseJson = new JSONObject();
-        try {
-            userResponse = userHttpClient.exchange();
-            String userResponseString = userResponse.parseAsString();
-            userResponseJson = getUserResponseJson(userResponseString);
-            userResponseJson.put(Constants.JSON_USER_COMPLETE_RESPONSE,userResponseString);
-        } catch (HttpClientException | IOException e) {
-            throw new RuntimeException(e);
+            HttpClient userHttpClient = new HttpClient(userRequestUrl,
+                    Collections.emptyMap(), userUtils.getHeaders(), HttpMethod.GET);
+            HttpResponse userResponse;
+            JSONObject userResponseJson = new JSONObject();
+            try {
+                userResponse = userHttpClient.exchange();
+                String userResponseString = userResponse.parseAsString();
+                userResponseJson = getUserResponseJson(userResponseString);
+                userResponseJson.put(Constants.JSON_USER_COMPLETE_RESPONSE, userResponseString);
+                list.add(userResponseJson);
+            } catch (HttpClientException | IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-        return userResponseJson;
+        obj.put(Constants.JSON_USER_COMPLETE_RESPONSE,list);
+        return obj;
     }
 
     private JSONObject getFileSearchResult(Config config) {
-        Map<String,String> params = new HashMap<>();
-        params.put(Constants.QUERY, null);
-        params.put(Constants.QUERY_QUALIFIER_FILENAME,config.getCodeSearchKeywords());
+        JSONObject obj=null;
+        JSONArray list = new JSONArray();
+        for(int i=0; i<config.getCodeSearchKeywords().length;i++) {
+            Map<String, String> params = new HashMap<>();
+            params.put(Constants.QUERY, null);
+            params.put(Constants.QUERY_QUALIFIER_FILENAME, config.getCodeSearchKeywords()[i]);
 
-        String fileRequestUrl= userUtils.getRequestUrlQuery(GitHubEndpoints.CODE_SEARCH_ENDPOINT, params);
+            String fileRequestUrl = userUtils.getRequestUrlQuery(GitHubEndpoints.CODE_SEARCH_ENDPOINT, params);
 
-        HttpClient fileHttpClient = new HttpClient(fileRequestUrl,
-                Collections.emptyMap(), userUtils.getHeaders(), HttpMethod.GET);
-        HttpResponse fileResponse;
-        JSONObject fileResponseJson = new JSONObject();
-        try {
-            fileResponse = fileHttpClient.exchange();
-            String fileResponseString = fileResponse.parseAsString();
-            fileResponseJson = getFileResponseJson(fileResponseString);
-            fileResponseJson.put(Constants.JSON_FILE_COMPLETE_RESPONSE,fileResponseString);
-        } catch (HttpClientException | IOException e) {
-            throw new RuntimeException(e);
+            HttpClient fileHttpClient = new HttpClient(fileRequestUrl,
+                    Collections.emptyMap(), userUtils.getHeaders(), HttpMethod.GET);
+            HttpResponse fileResponse;
+            JSONObject fileResponseJson = new JSONObject();
+            try {
+                fileResponse = fileHttpClient.exchange();
+                String fileResponseString = fileResponse.parseAsString();
+                fileResponseJson = getFileResponseJson(fileResponseString);
+                fileResponseJson.put(Constants.JSON_FILE_COMPLETE_RESPONSE, fileResponseString);
+                list.add(fileResponseJson);
+            } catch (HttpClientException | IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-        return fileResponseJson;
+        obj.put(Constants.JSON_FILE_COMPLETE_RESPONSE,list);
+        return obj;
     }
 
     private JSONObject getRepoSearchResult(Config config) {
+        JSONObject obj=null;
+        JSONArray list = new JSONArray();
+        for(int i=0; i<config.getCodeSearchKeywords().length;i++) {
 
-        String repoRequestUrl= userUtils.getRequestUrlQuery(GitHubEndpoints.REPO_SEARCH_ENDPOINT,
-                Map.of(Constants.QUERY, config.getRepositoryNames()));
+            String repoRequestUrl = userUtils.getRequestUrlQuery(GitHubEndpoints.REPO_SEARCH_ENDPOINT,
+                    Map.of(Constants.QUERY, config.getRepositoryNames()[i]));
 
-        HttpClient repoHttpClient = new HttpClient(repoRequestUrl,
-                Collections.emptyMap(), userUtils.getHeaders(), HttpMethod.GET);
-        HttpResponse repoResponse;
-        JSONObject repoResponseJson = new JSONObject();
-        try {
-            repoResponse = repoHttpClient.exchange();
-            String repoResponseString = repoResponse.parseAsString();
-            repoResponseJson = getRepoResponseJson(repoResponseString);
-            repoResponseJson.put(Constants.JSON_REPO_COMPLETE_RESPONSE,repoResponseString);
-        } catch (HttpClientException | IOException e) {
-            throw new RuntimeException(e);
+            HttpClient repoHttpClient = new HttpClient(repoRequestUrl,
+                    Collections.emptyMap(), userUtils.getHeaders(), HttpMethod.GET);
+            HttpResponse repoResponse;
+            JSONObject repoResponseJson = new JSONObject();
+            try {
+                repoResponse = repoHttpClient.exchange();
+                String repoResponseString = repoResponse.parseAsString();
+                repoResponseJson = getRepoResponseJson(repoResponseString);
+                repoResponseJson.put(Constants.JSON_REPO_COMPLETE_RESPONSE, repoResponseString);
+                list.add(repoResponseJson);
+            } catch (HttpClientException | IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-        return repoResponseJson;
+        obj.put(Constants.JSON_REPO_COMPLETE_RESPONSE,list);
+        return obj;
     }
 
     private JSONObject getCodeResponseJson(String codeResponseString) {

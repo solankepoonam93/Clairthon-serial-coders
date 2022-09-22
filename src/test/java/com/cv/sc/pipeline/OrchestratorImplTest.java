@@ -28,10 +28,10 @@ public class OrchestratorImplTest {
         Config config = new Config();
         config.setId(1L);
         config.setConfigName("test1");
-        config.setCodeSearchKeywords("CountAboveSixty");
+        config.setCodeSearchKeywords(new String[]{"CountAboveSixty"});
         config.setCustomerName("Amruta");
-        config.setUserSearchKeywords("AmrutaChichani");
-        config.setRepositoryNames("AmrutaChichani/Java_8_demo_project");
+        config.setUserSearchKeywords(new String[]{"AmrutaChichani"});
+        config.setRepositoryNames(new String[]{"AmrutaChichani/Java_8_demo_project"});
         return config;
     }
 }
