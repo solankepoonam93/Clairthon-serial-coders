@@ -1,6 +1,8 @@
 package com.cv.sc.pipeline;
 
 import com.cv.sc.model.Config;
+import com.cv.sc.model.SearchResponse;
+import com.cv.sc.util.Constants;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,13 +15,13 @@ public class OrchestratorImplTest {
     public void searchTest() throws Exception {
         Config config = getConfig();
 
-        Map<String , String> result = orchestrator.search(config);
+        SearchResponse result = orchestrator.search(config);
 
         Assert.assertNotNull(result);
-        Assert.assertTrue(result.containsKey("CodeResult"));
-        Assert.assertTrue(result.containsKey("UserResult"));
-        Assert.assertTrue(result.containsKey("FileResult"));
-      /*  Assert.assertTrue(result.containsKey("RepoResult"));*/
+        Assert.assertTrue(result.getResponse().containsKey(Constants.JSON_CODE));
+        Assert.assertTrue(result.getResponse().containsKey(Constants.JSON_USER));
+        Assert.assertTrue(result.getResponse().containsKey(Constants.JSON_FILE));
+      /*  Assert.assertTrue(result.getResponse().containsKey(Constants.JSON_REPO));*/
     }
 
     private Config getConfig() {
