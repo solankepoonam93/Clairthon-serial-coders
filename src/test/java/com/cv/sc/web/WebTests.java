@@ -32,7 +32,7 @@ public abstract class WebTests {
     protected Map<String, String> getHeaderMapContainingGitToken() {
         Map<String, String> headers = new HashMap<>();
         headers.put("Accept", "application/vnd.github+json");
-        headers.put("Authorization","Bearer "+ authToken);
+        headers.put("Authorization", authToken);
         return headers;
     }
 }
