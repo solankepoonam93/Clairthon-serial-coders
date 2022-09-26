@@ -28,7 +28,7 @@ public class OrchestratorImplTest {
         Config config = new Config();
         config.setId(1L);
         config.setConfigName("test1");
-        config.setCodeSearchKeywords(new String[]{"CountAboveSixty"});
+        config.setCodeSearchKeywords(new String[]{"sortByNames"});
         config.setCustomerName("Amruta");
         config.setUserSearchKeywords(new String[]{"AmrutaChichani"});
         config.setRepositoryNames(new String[]{"AmrutaChichani/Java_8_demo_project"});
