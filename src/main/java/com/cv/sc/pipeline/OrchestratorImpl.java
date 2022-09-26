@@ -9,6 +9,8 @@ import com.cv.sc.model.github.GitHubContentSearch;
 import com.cv.sc.model.github.GitHubEntity;
 import com.cv.sc.model.github.GitHubFileSearch;
 import com.cv.sc.model.github.GithubUser;
+import com.cv.sc.storage.StorageService;
+import com.cv.sc.storage.impl.DBStorageServiceImpl;
 import com.cv.sc.util.Constants;
 import com.cv.sc.util.GitHubEndpoints;
 import com.cv.sc.util.ObjectMapperProvider;
@@ -19,11 +21,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.http.HttpResponse;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 public class OrchestratorImpl implements Orchestrator{
+    private UserUtils userUtils;
+    private StorageService storageService;
 
-    private UserUtils userUtils = new UserUtils();
+    public OrchestratorImpl() {
+        userUtils = new UserUtils();
+        storageService = new DBStorageServiceImpl();
+    }
+
 
     @Override
     public SearchResponse search(Config config) throws HttpClientException, IOException {
@@ -44,17 +53,15 @@ public class OrchestratorImpl implements Orchestrator{
 
         // TODO Repo Search
         //Repo Search
-        /*//uncomment when need to try for repo serach
+        /*//uncomment when need to try for repo search
          Map<String, String> repoSearchResult = getRepoSearchResult(config);*/
-
+        searchResponse = saveSearchResult(searchResponse);
         return searchResponse;
     }
 
     @Override
-    public void saveSearchResult(Map<String, String> searchResponse) {
-        //save response to S3
-        //Save response to DB
-
+    public SearchResponse saveSearchResult(SearchResponse searchResponse) throws UnsupportedEncodingException {
+        return (SearchResponse) storageService.save(searchResponse);
     }
 
     private List<GitHubEntity> getContentSearchResult(String searchTerm) throws HttpClientException, IOException {

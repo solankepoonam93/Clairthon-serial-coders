@@ -5,9 +5,10 @@ import com.cv.sc.model.Config;
 import com.cv.sc.model.SearchResponse;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 public interface Orchestrator {
     public SearchResponse search(Config config) throws HttpClientException, IOException;
-    public void saveSearchResult(Map<String, String> searchResponse);
+    public SearchResponse saveSearchResult(SearchResponse searchResponse) throws UnsupportedEncodingException;
 }
