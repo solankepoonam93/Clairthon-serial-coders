@@ -21,7 +21,7 @@ public class Config implements SCEntity {
 
     private String[] repositoryNames;
 
-    private String[] classNames;
+    private String[] fileNames;
 
     private String customerName;
 
@@ -71,12 +71,12 @@ public class Config implements SCEntity {
         this.repositoryNames = repositoryNames;
     }
 
-    public String[] getClassNames() {
-        return classNames;
+    public String[] getFileNames() {
+        return fileNames;
     }
 
-    public void setClassNames(String[] classNames) {
-        this.classNames = classNames;
+    public void setFileNames(String[] fileNames) {
+        this.fileNames = fileNames;
     }
 
     public String getCustomerName() {
@@ -111,7 +111,7 @@ public class Config implements SCEntity {
                 ", codeSearchKeywords='" + codeSearchKeywords + '\'' +
                 ", userSearchKeywords='" + userSearchKeywords + '\'' +
                 ", repositoryNames='" + repositoryNames + '\'' +
-                ", classNames='" + classNames + '\'' +
+                ", classNames='" + fileNames + '\'' +
                 ", customerName='" + customerName + '\'' +
                 ", modifiedBy='" + modifiedBy + '\'' +
                 ", modifiedDate=" + modifiedDate +

@@ -4,6 +4,7 @@ import com.cv.sc.exception.HttpClientException;
 import com.cv.sc.http.HttpClient;
 import com.cv.sc.http.HttpMethod;
 import com.cv.sc.model.Config;
+import com.cv.sc.model.SearchResponse;
 import com.cv.sc.model.github.GitHubContentSearch;
 import com.cv.sc.model.github.GitHubEntity;
 import com.cv.sc.model.github.GitHubFileSearch;
@@ -25,28 +26,28 @@ public class OrchestratorImpl implements Orchestrator{
     private UserUtils userUtils = new UserUtils();
 
     @Override
-    public Map<String, List<GitHubEntity>> search(Config config) throws HttpClientException, IOException {
+    public SearchResponse search(Config config) throws HttpClientException, IOException {
 
-        Map<String, List<GitHubEntity>> responseMap= new HashMap<>();
-        //Code search
-        List<GitHubEntity> contentSearchResult = getContentSearchResult(config);
-        //User search
-        List<GitHubEntity> userSearchResult = getUserSearchResult(config);
-        //fileSearch
-        List<GitHubEntity> fileSearchResult = getFileSearchResult(config);
+        SearchResponse searchResponse = new SearchResponse();
+
+        for(String searchTerm: config.getUserSearchKeywords()) {
+            searchResponse.addUserSearchResult(Map.of(searchTerm, getUserSearchResult(searchTerm)));
+        }
+
+        for(String searchTerm: config.getCodeSearchKeywords()) {
+            searchResponse.addContentSearch(Map.of(searchTerm, getContentSearchResult(searchTerm)));
+        }
+
+        for(String searchTerm: config.getFileNames()) {
+            searchResponse.addFileSearchResult(Map.of(searchTerm, getFileSearchResult(searchTerm)));
+        }
+
+        // TODO Repo Search
         //Repo Search
         /*//uncomment when need to try for repo serach
          Map<String, String> repoSearchResult = getRepoSearchResult(config);*/
 
-        //Package search
-
-        //combine the results of all in one map
-        responseMap.put("CodeResult", contentSearchResult);
-        responseMap.put("UserResult", userSearchResult);
-        responseMap.put("FileResult", fileSearchResult);
-
-        //need to refactor this once model for final result JSON is ready
-        return responseMap;
+        return searchResponse;
     }
 
     @Override
@@ -56,9 +57,9 @@ public class OrchestratorImpl implements Orchestrator{
 
     }
 
-    private List<GitHubEntity> getContentSearchResult(Config config) throws HttpClientException, IOException {
+    private List<GitHubEntity> getContentSearchResult(String searchTerm) throws HttpClientException, IOException {
         String codeRequestUrl= userUtils.getRequestUrlQuery(GitHubEndpoints.CODE_SEARCH_ENDPOINT,
-                Map.of(Constants.QUERY, config.getCodeSearchKeywords()));
+                Map.of(Constants.QUERY, searchTerm));
         HttpClient codeHttpClient = new HttpClient(codeRequestUrl,
                 Collections.emptyMap(), userUtils.getHeaders(), HttpMethod.GET);
         HttpResponse codeResponse = codeHttpClient.exchange();
@@ -66,10 +67,10 @@ public class OrchestratorImpl implements Orchestrator{
         return  extract(codeResponseString, GitHubContentSearch.class);
     }
 
-    private List<GitHubEntity> getUserSearchResult(Config config) throws HttpClientException, IOException {
+    private List<GitHubEntity> getUserSearchResult(String searchTerm) throws HttpClientException, IOException {
 
         Map<String,String> params = new HashMap<>();
-        params.put(Constants.QUERY, config.getUserSearchKeywords());
+        params.put(Constants.QUERY, searchTerm);
         params.put(Constants.QUERY_QUALIFIER_IN, Constants.QUERY_QUALIFIER_USER);
 
         String userRequestUrl= userUtils.getRequestUrlQuery(GitHubEndpoints.USER_SEARCH_ENDPOINT, params);
@@ -95,10 +96,10 @@ public class OrchestratorImpl implements Orchestrator{
         return entityList;
     }
 
-    private List<GitHubEntity> getFileSearchResult(Config config) throws HttpClientException, IOException {
+    private List<GitHubEntity> getFileSearchResult(String searchTerm) throws HttpClientException, IOException {
         Map<String,String> params = new HashMap<>();
         params.put(Constants.QUERY, null);
-        params.put(Constants.QUERY_QUALIFIER_FILENAME,config.getCodeSearchKeywords());
+        params.put(Constants.QUERY_QUALIFIER_FILENAME, searchTerm);
 
         String fileRequestUrl= userUtils.getRequestUrlQuery(GitHubEndpoints.CODE_SEARCH_ENDPOINT, params);
 
@@ -109,10 +110,10 @@ public class OrchestratorImpl implements Orchestrator{
         return extract(fileResponseString, GitHubFileSearch.class);
     }
 
-    private Map<String, String> getRepoSearchResult(Config config) {
+    private Map<String, String> getRepoSearchResult(String searchTerm) {
 
         String repoRequestUrl= userUtils.getRequestUrlQuery(GitHubEndpoints.REPO_SEARCH_ENDPOINT,
-                Map.of(Constants.QUERY, config.getRepositoryNames()));
+                Map.of(Constants.QUERY, searchTerm));
 
         HttpClient repoHttpClient = new HttpClient(repoRequestUrl,
                 Collections.emptyMap(), userUtils.getHeaders(), HttpMethod.GET);
