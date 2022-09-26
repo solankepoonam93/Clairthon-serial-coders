@@ -4,30 +4,36 @@ import com.cv.sc.exception.HttpClientException;
 import com.cv.sc.http.HttpClient;
 import com.cv.sc.http.HttpMethod;
 import com.cv.sc.model.Config;
+import com.cv.sc.model.github.GitHubContentSearch;
+import com.cv.sc.model.github.GitHubEntity;
+import com.cv.sc.model.github.GitHubFileSearch;
+import com.cv.sc.model.github.GithubUser;
 import com.cv.sc.util.Constants;
 import com.cv.sc.util.GitHubEndpoints;
+import com.cv.sc.util.ObjectMapperProvider;
 import com.cv.sc.util.UserUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.http.HttpResponse;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class OrchestratorImpl implements Orchestrator{
 
     private UserUtils userUtils = new UserUtils();
 
     @Override
-    public Map<String, String> search(Config config) {
+    public Map<String, List<GitHubEntity>> search(Config config) throws HttpClientException, IOException {
 
-        Map<String, String> responseMap= new HashMap<>();
+        Map<String, List<GitHubEntity>> responseMap= new HashMap<>();
         //Code search
-        Map<String, String> codeSearchResult = getCodeSearchResult(config);
+        List<GitHubEntity> contentSearchResult = getContentSearchResult(config);
         //User search
-        Map<String, String> userSearchResult = getUserSearchResult(config);
+        List<GitHubEntity> userSearchResult = getUserSearchResult(config);
         //fileSearch
-        Map<String, String> fileSearchResult = getFileSearchResult(config);
+        List<GitHubEntity> fileSearchResult = getFileSearchResult(config);
         //Repo Search
         /*//uncomment when need to try for repo serach
          Map<String, String> repoSearchResult = getRepoSearchResult(config);*/
@@ -35,10 +41,10 @@ public class OrchestratorImpl implements Orchestrator{
         //Package search
 
         //combine the results of all in one map
-        responseMap.putAll(codeSearchResult);
-        responseMap.putAll(userSearchResult);
-        responseMap.putAll(fileSearchResult);
-        /*responseMap.putAll(repoSearchResult);*/
+        responseMap.put("CodeResult", contentSearchResult);
+        responseMap.put("UserResult", userSearchResult);
+        responseMap.put("FileResult", fileSearchResult);
+
         //need to refactor this once model for final result JSON is ready
         return responseMap;
     }
@@ -50,28 +56,18 @@ public class OrchestratorImpl implements Orchestrator{
 
     }
 
-    private Map<String, String> getCodeSearchResult(Config config) {
+    private List<GitHubEntity> getContentSearchResult(Config config) throws HttpClientException, IOException {
         String codeRequestUrl= userUtils.getRequestUrlQuery(GitHubEndpoints.CODE_SEARCH_ENDPOINT,
                 Map.of(Constants.QUERY, config.getCodeSearchKeywords()));
-
         HttpClient codeHttpClient = new HttpClient(codeRequestUrl,
                 Collections.emptyMap(), userUtils.getHeaders(), HttpMethod.GET);
-        HttpResponse codeResponse;
-        Map<String, String> responseMap = new HashMap<>();
-        try {
-              codeResponse = codeHttpClient.exchange();
-              String codeResponseString = codeResponse.parseAsString();
-              System.out.println(codeResponseString);
-              responseMap.put("CodeResult",codeResponseString); //Todo need to put only selected fields
-          } catch (HttpClientException e) {
-              throw new RuntimeException(e);
-          } catch (IOException e) {
-              throw new RuntimeException(e);
-          }
-        return responseMap;
+        HttpResponse codeResponse = codeHttpClient.exchange();
+        String codeResponseString = codeResponse.parseAsString();
+        return  extract(codeResponseString, GitHubContentSearch.class);
     }
 
-    private Map<String, String> getUserSearchResult(Config config) {
+    private List<GitHubEntity> getUserSearchResult(Config config) throws HttpClientException, IOException {
+
         Map<String,String> params = new HashMap<>();
         params.put(Constants.QUERY, config.getUserSearchKeywords());
         params.put(Constants.QUERY_QUALIFIER_IN, Constants.QUERY_QUALIFIER_USER);
@@ -80,22 +76,26 @@ public class OrchestratorImpl implements Orchestrator{
 
         HttpClient userHttpClient = new HttpClient(userRequestUrl,
                 Collections.emptyMap(), userUtils.getHeaders(), HttpMethod.GET);
-        HttpResponse userResponse;
-        Map<String, String> responseMap = new HashMap<>();
-        try {
-            userResponse = userHttpClient.exchange();
-            String userResponseString = userResponse.parseAsString();
-            System.out.println(userResponseString);
-            responseMap.put("UserResult",userResponseString);
-        } catch (HttpClientException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return responseMap;
+        HttpResponse userResponse = userHttpClient.exchange();
+        String userResponseString = userResponse.parseAsString();
+        return extract(userResponseString, GithubUser.class);
     }
 
-    private Map<String, String> getFileSearchResult(Config config) {
+    public List<GitHubEntity> extract(String userResponseString, Class<? extends GitHubEntity> clazz) throws JsonProcessingException {
+        List<GitHubEntity> entityList = new ArrayList<>(10);
+        ObjectMapper objectMapperForParsingResult = ObjectMapperProvider.getObjectMapperForParsingResult();
+        JsonNode items = objectMapperForParsingResult.readTree(userResponseString).get("items");
+        Iterator<JsonNode> iterator = items.iterator();
+        while (iterator.hasNext()) {
+            JsonNode next = iterator.next();
+            String s = next.toString();
+            GitHubEntity gitHubEntity = objectMapperForParsingResult.readValue(s, clazz);
+            entityList.add(gitHubEntity);
+        }
+        return entityList;
+    }
+
+    private List<GitHubEntity> getFileSearchResult(Config config) throws HttpClientException, IOException {
         Map<String,String> params = new HashMap<>();
         params.put(Constants.QUERY, null);
         params.put(Constants.QUERY_QUALIFIER_FILENAME,config.getCodeSearchKeywords());
@@ -104,19 +104,9 @@ public class OrchestratorImpl implements Orchestrator{
 
         HttpClient fileHttpClient = new HttpClient(fileRequestUrl,
                 Collections.emptyMap(), userUtils.getHeaders(), HttpMethod.GET);
-        HttpResponse fileResponse;
-        Map<String, String> responseMap = new HashMap<>();
-        try {
-            fileResponse = fileHttpClient.exchange();
-            String fileResponseString = fileResponse.parseAsString();
-            System.out.println(fileResponseString);
-            responseMap.put("FileResult",fileResponseString);
-        } catch (HttpClientException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return responseMap;
+        HttpResponse fileResponse = fileHttpClient.exchange();
+        String fileResponseString = fileResponse.parseAsString();
+        return extract(fileResponseString, GitHubFileSearch.class);
     }
 
     private Map<String, String> getRepoSearchResult(Config config) {
@@ -131,7 +121,6 @@ public class OrchestratorImpl implements Orchestrator{
         try {
             repoResponse = repoHttpClient.exchange();
             String repoResponseString = repoResponse.parseAsString();
-            System.out.println(repoResponseString);
             responseMap.put("RepoResult",repoResponseString);
         } catch (HttpClientException e) {
             throw new RuntimeException(e);

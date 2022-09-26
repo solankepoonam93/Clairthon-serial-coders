@@ -12,7 +12,7 @@ import java.util.Collections;
  * <br>Created By: bhushan.karmarkar12@gmail.com<br>
  * Date: 12/09/22
  */
-public class HttpClientTest extends WebTests {
+public class HttpClientTests extends WebTests {
 
     @Test
     public void testHttpClient() {

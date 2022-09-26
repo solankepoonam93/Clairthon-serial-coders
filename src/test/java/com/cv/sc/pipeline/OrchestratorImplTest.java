@@ -1,9 +1,11 @@
 package com.cv.sc.pipeline;
 
 import com.cv.sc.model.Config;
+import com.cv.sc.model.github.GitHubEntity;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Map;
 
 public class OrchestratorImplTest {
@@ -13,7 +15,7 @@ public class OrchestratorImplTest {
     public void searchTest() throws Exception {
         Config config = getConfig();
 
-        Map<String , String> result = orchestrator.search(config);
+        Map<String, List<GitHubEntity>> result = orchestrator.search(config);
 
         Assert.assertNotNull(result);
         Assert.assertTrue(result.containsKey("CodeResult"));

@@ -16,7 +16,8 @@ public class SearchResult implements SCEntity {
     @ManyToOne
     private SearchParent searchParent;
 
-    @Column(columnDefinition = "MEDIUMTEXT")
+    @Lob
+    @Column
     private String jsonResult;
 
     public Long getId() {
