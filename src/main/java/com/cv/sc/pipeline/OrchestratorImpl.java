@@ -56,8 +56,11 @@ public class OrchestratorImpl implements Orchestrator{
     }
 
     private JSONObject getCodeSearchResult(Config config) {
-        JSONObject obj=null;
-        JSONArray list = new JSONArray();
+        JSONObject obj=new JSONObject();
+        JSONObject list = new JSONObject();
+        System.out.println("AuthToken ");
+
+        System.out.println("AuthToken "+System.getenv("AuthToken"));
         for(int i=0; i<config.getCodeSearchKeywords().length;i++)
         {
             String codeRequestUrl= userUtils.getRequestUrlQuery(GitHubEndpoints.CODE_SEARCH_ENDPOINT,
@@ -72,7 +75,7 @@ public class OrchestratorImpl implements Orchestrator{
                 String codeResponseString = codeResponse.parseAsString();
                 codeResponseJson = getCodeResponseJson(codeResponseString);
                 codeResponseJson.put(Constants.JSON_CODE_COMPLETE_RESPONSE,codeResponseString);
-                list.add(codeResponseJson);
+                list.put(config.getCodeSearchKeywords()[i], codeResponseJson);
             } catch (HttpClientException | IOException e) {
                 throw new RuntimeException(e);
             }
@@ -82,10 +85,11 @@ public class OrchestratorImpl implements Orchestrator{
     }
 
     private JSONObject getUserSearchResult(Config config) {
-        JSONObject obj=null;
-        JSONArray list = new JSONArray();
-        for(int i=0; i<config.getCodeSearchKeywords().length;i++) {
+        JSONObject obj=new JSONObject();
+        JSONObject list = new JSONObject();
+        for(int i=0; i<config.getUserSearchKeywords().length;i++) {
             Map<String, String> params = new HashMap<>();
+            System.out.println("keywords "+config.getUserSearchKeywords()[i]);
             params.put(Constants.QUERY, config.getUserSearchKeywords()[i]);
             params.put(Constants.QUERY_QUALIFIER_IN, Constants.QUERY_QUALIFIER_USER);
 
@@ -100,7 +104,7 @@ public class OrchestratorImpl implements Orchestrator{
                 String userResponseString = userResponse.parseAsString();
                 userResponseJson = getUserResponseJson(userResponseString);
                 userResponseJson.put(Constants.JSON_USER_COMPLETE_RESPONSE, userResponseString);
-                list.add(userResponseJson);
+                list.put(config.getUserSearchKeywords()[i],userResponseJson);
             } catch (HttpClientException | IOException e) {
                 throw new RuntimeException(e);
             }
@@ -110,8 +114,8 @@ public class OrchestratorImpl implements Orchestrator{
     }
 
     private JSONObject getFileSearchResult(Config config) {
-        JSONObject obj=null;
-        JSONArray list = new JSONArray();
+        JSONObject obj=new JSONObject();
+        JSONObject list = new JSONObject();
         for(int i=0; i<config.getCodeSearchKeywords().length;i++) {
             Map<String, String> params = new HashMap<>();
             params.put(Constants.QUERY, null);
@@ -128,7 +132,7 @@ public class OrchestratorImpl implements Orchestrator{
                 String fileResponseString = fileResponse.parseAsString();
                 fileResponseJson = getFileResponseJson(fileResponseString);
                 fileResponseJson.put(Constants.JSON_FILE_COMPLETE_RESPONSE, fileResponseString);
-                list.add(fileResponseJson);
+                list.put(config.getCodeSearchKeywords()[i],fileResponseJson);
             } catch (HttpClientException | IOException e) {
                 throw new RuntimeException(e);
             }
@@ -138,8 +142,8 @@ public class OrchestratorImpl implements Orchestrator{
     }
 
     private JSONObject getRepoSearchResult(Config config) {
-        JSONObject obj=null;
-        JSONArray list = new JSONArray();
+        JSONObject obj=new JSONObject();
+        JSONObject list = new JSONObject();
         for(int i=0; i<config.getCodeSearchKeywords().length;i++) {
 
             String repoRequestUrl = userUtils.getRequestUrlQuery(GitHubEndpoints.REPO_SEARCH_ENDPOINT,
@@ -154,7 +158,7 @@ public class OrchestratorImpl implements Orchestrator{
                 String repoResponseString = repoResponse.parseAsString();
                 repoResponseJson = getRepoResponseJson(repoResponseString);
                 repoResponseJson.put(Constants.JSON_REPO_COMPLETE_RESPONSE, repoResponseString);
-                list.add(repoResponseJson);
+                list.put(config.getRepositoryNames()[i],repoResponseJson);
             } catch (HttpClientException | IOException e) {
                 throw new RuntimeException(e);
             }
