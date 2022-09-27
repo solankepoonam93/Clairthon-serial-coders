@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 /**
  * Created By: bhushan.karmarkar12@gmail.com
@@ -54,5 +55,12 @@ public class EntityController<T extends SCEntity> implements SCController {
     @PostMapping(path = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public T update(T value) throws IOException {
         return (T) dbStorageService.update(value);
+    }
+
+    @GetMapping(path = "/fetchAll/{entityName}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<T> fetchAll(@PathVariable String entityName) throws IOException {
+        Class entityClass = EntityTypes.getEntityClass(entityName);
+        List<T> t= dbStorageService.findAll(entityClass);
+        return t;
     }
 }

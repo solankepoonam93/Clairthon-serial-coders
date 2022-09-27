@@ -2,6 +2,7 @@ package com.cv.sc.storage;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 public interface StorageService {
 
@@ -12,4 +13,6 @@ public interface StorageService {
     Object delete(Class entityClass, Object pk) throws IOException;
 
     Object update(Object value) throws IOException;
+
+    List findAll(Class entityClass) throws IOException;
 }

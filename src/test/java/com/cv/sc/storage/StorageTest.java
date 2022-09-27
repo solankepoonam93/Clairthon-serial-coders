@@ -13,7 +13,7 @@ import java.util.Date;
  * Created By: bhushan.karmarkar12@gmail.com
  * Date: 15/09/22
  */
-public class StorageTests {
+public class StorageTest {
 
     public static final String SAMPLE_RESULT = "{\n" +
             "    \"total_count\": 1,\n" +
