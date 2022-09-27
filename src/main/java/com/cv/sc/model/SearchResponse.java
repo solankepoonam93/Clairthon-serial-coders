@@ -10,24 +10,19 @@ import java.util.List;
 import java.util.Map;
 
 @Entity
+@Access(AccessType.PROPERTY)
 public class SearchResponse implements SCEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Lob
     private String userSearchJsonResultString;
 
-    @Lob
     private String contentSearchJsonResultString;
 
-    @Lob
     private String fileSearchJsonResultString;
 
     @Transient
     private ObjectMapper objectMapper;
-
     @Transient
     private List<Map<String, List<GitHubEntity>>> userSearchResults;
     @Transient
@@ -41,7 +36,8 @@ public class SearchResponse implements SCEntity {
         fileSearchResults = new ArrayList<>();
         objectMapper = new ObjectMapper();
     }
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getId() {
         return id;
     }
@@ -50,6 +46,7 @@ public class SearchResponse implements SCEntity {
         this.id = id;
     }
 
+    @Lob
     public String getUserSearchJsonResultString() throws JsonProcessingException {
         return objectMapper.writeValueAsString(userSearchResults);
     }
@@ -58,6 +55,7 @@ public class SearchResponse implements SCEntity {
         this.userSearchJsonResultString = userSearchJsonResultString;
     }
 
+    @Lob
     public String getContentSearchJsonResultString() throws JsonProcessingException {
         return objectMapper.writeValueAsString(contentSearchResults);
     }
@@ -66,6 +64,7 @@ public class SearchResponse implements SCEntity {
         this.contentSearchJsonResultString = contentSearchJsonResultString;
     }
 
+    @Lob
     public String getFileSearchJsonResultString() throws JsonProcessingException {
         return objectMapper.writeValueAsString(fileSearchResults);
     }
@@ -86,15 +85,39 @@ public class SearchResponse implements SCEntity {
         fileSearchResults.add(fileResult);
     }
 
+    @Transient
     public List<Map<String, List<GitHubEntity>>> getUserSearchResults() {
         return userSearchResults;
     }
 
+    @Transient
     public List<Map<String, List<GitHubEntity>>> getContentSearchResults() {
         return contentSearchResults;
     }
 
+    @Transient
     public List<Map<String, List<GitHubEntity>>> getFileSearchResults() {
         return fileSearchResults;
+    }
+
+    @Transient
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
+
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
+    public void setUserSearchResults(List<Map<String, List<GitHubEntity>>> userSearchResults) {
+        this.userSearchResults = userSearchResults;
+    }
+
+    public void setContentSearchResults(List<Map<String, List<GitHubEntity>>> contentSearchResults) {
+        this.contentSearchResults = contentSearchResults;
+    }
+
+    public void setFileSearchResults(List<Map<String, List<GitHubEntity>>> fileSearchResults) {
+        this.fileSearchResults = fileSearchResults;
     }
 }

@@ -2,14 +2,24 @@ package com.cv.sc.storage;
 
 import com.cv.sc.model.Config;
 import com.cv.sc.model.SearchParent;
+import com.cv.sc.model.SearchResponse;
 import com.cv.sc.model.SearchResult;
+import com.cv.sc.model.github.GitHubContentSearch;
+import com.cv.sc.model.github.GitHubEntity;
+import com.cv.sc.model.github.GitHubFileSearch;
+import com.cv.sc.model.github.GithubUser;
 import com.cv.sc.storage.impl.DBStorageServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created By: bhushan.karmarkar12@gmail.com
@@ -48,6 +58,38 @@ public class StorageTest {
         Assert.assertNotNull(searchResult.getId());
     }
 
+    @Test
+    public void searchResponseTest() throws UnsupportedEncodingException, JsonProcessingException {
+        SearchResponse testSearchResponse = getTestSearchResponse();
+        SearchResponse savedSearchResponse = (SearchResponse) dbStorageService.save(testSearchResponse);
+
+        Assert.assertTrue(savedSearchResponse.getId() != null);
+        ObjectMapper objectMapper = new ObjectMapper();
+        Assert.assertEquals(objectMapper.writeValueAsString(testSearchResponse.getUserSearchResults()), savedSearchResponse.getUserSearchJsonResultString());
+        Assert.assertEquals(objectMapper.writeValueAsString(testSearchResponse.getContentSearchResults()), savedSearchResponse.getContentSearchJsonResultString());
+        Assert.assertEquals(objectMapper.writeValueAsString(testSearchResponse.getFileSearchResults()), savedSearchResponse.getFileSearchJsonResultString());
+    }
+    private SearchResponse getTestSearchResponse() {
+        SearchResponse searchResponse = new SearchResponse();
+        List<GitHubEntity> userList = new ArrayList<>();
+        GithubUser user = new GithubUser();
+        user.setLogin("bkpune");
+        userList.add(user);
+        searchResponse.addUserSearchResult(Map.of("users", userList));
+
+        List<GitHubEntity> contentList = new ArrayList<>();
+        GitHubContentSearch contentSearch = new GitHubContentSearch();
+        contentSearch.setName("Test Content");
+        contentList.add(contentSearch);
+        searchResponse.addContentSearch(Map.of("content", contentList));
+
+        List<GitHubEntity> fileList = new ArrayList<>();
+        GitHubFileSearch fileSearch = new GitHubFileSearch();
+        fileSearch.setName("Test File Search");
+        fileList.add(fileSearch);
+        searchResponse.addFileSearchResult(Map.of("files", fileList));
+        return searchResponse;
+    }
     @Test
     public void updateTest() throws IOException {
         // Save config in db
