@@ -21,6 +21,7 @@ public class EntityTypes {
         entityClassMap.put(Report.class.getSimpleName(), Report.class);
         entityClassMap.put(SearchParent.class.getSimpleName(), SearchParent.class);
         entityClassMap.put(SearchResult.class.getSimpleName(), SearchResult.class);
+        entityClassMap.put(SearchResponse.class.getSimpleName(), SearchResponse.class);
     }
 
     public static void addEntity(String entityName, Class entityClass) {

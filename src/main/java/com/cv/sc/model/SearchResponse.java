@@ -1,6 +1,8 @@
 package com.cv.sc.model;
 
 import com.cv.sc.model.github.GitHubEntity;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -8,11 +10,37 @@ import java.util.List;
 import java.util.Map;
 
 @Entity
-public class SearchResponse {
+public class SearchResponse implements SCEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Lob
+    private String userSearchJsonResultString;
+
+    @Lob
+    private String contentSearchJsonResultString;
+
+    @Lob
+    private String fileSearchJsonResultString;
+
+    @Transient
+    private ObjectMapper objectMapper;
+
+    @Transient
+    private List<Map<String, List<GitHubEntity>>> userSearchResults;
+    @Transient
+    private List<Map<String, List<GitHubEntity>>> contentSearchResults;
+    @Transient
+    private List<Map<String, List<GitHubEntity>>> fileSearchResults;
+
+    public SearchResponse() {
+        userSearchResults = new ArrayList<>();
+        contentSearchResults = new ArrayList<>();
+        fileSearchResults = new ArrayList<>();
+        objectMapper = new ObjectMapper();
+    }
 
     public Long getId() {
         return id;
@@ -22,36 +50,29 @@ public class SearchResponse {
         this.id = id;
     }
 
-    public SearchResponse() {
-        userSearchResults = new ArrayList<>();
-        contentSearchResults = new ArrayList<>();
-        repoSearchResults = new ArrayList<>();
-        fileSearchResults = new ArrayList<>();
+    public String getUserSearchJsonResultString() throws JsonProcessingException {
+        return objectMapper.writeValueAsString(userSearchResults);
     }
 
+    public void setUserSearchJsonResultString(String userSearchJsonResultString) {
+        this.userSearchJsonResultString = userSearchJsonResultString;
+    }
 
-    // [
-    // userSearchTerm1: result1, result2, result3,
-    // userSearchTerm2: result1, result2, result3,
-    // userSearchTerm3: result1, result2, result3
-    // ]
+    public String getContentSearchJsonResultString() throws JsonProcessingException {
+        return objectMapper.writeValueAsString(contentSearchResults);
+    }
 
-    @Lob
-    private List<Map<String, List<GitHubEntity>>> userSearchResults;
+    public void setContentSearchJsonResultString(String contentSearchJsonResultString) {
+        this.contentSearchJsonResultString = contentSearchJsonResultString;
+    }
 
-    // [
-    // contentSearchTerm1: result1, result2, result3,
-    // contentSearchTerm2: result1, result2, result3,
-    // contentSearchTerm3: result1, result2, result3
-    // ]
-    @Lob
-    private List<Map<String, List<GitHubEntity>>> contentSearchResults;
+    public String getFileSearchJsonResultString() throws JsonProcessingException {
+        return objectMapper.writeValueAsString(fileSearchResults);
+    }
 
-    // [
-    // repoSearchTerm1: result1, result2, result3,
-    // repoSearchTerm2: result1, result2, result3,
-    // repoSearchTerm3: result1, result2, result3
-    // ]
+    public void setFileSearchJsonResultString(String fileSearchJsonResultString) {
+        this.fileSearchJsonResultString = fileSearchJsonResultString;
+    }
 
     public void addUserSearchResult(Map<String, List<GitHubEntity>> userResult) {
         userSearchResults.add(userResult);
@@ -61,50 +82,19 @@ public class SearchResponse {
         contentSearchResults.add(contentResult);
     }
 
-    public void addRepoSearchResult(Map<String, List<GitHubEntity>> repoResult) {
-        repoSearchResults.add(repoResult);
-    }
-
     public void addFileSearchResult(Map<String, List<GitHubEntity>> fileResult) {
         fileSearchResults.add(fileResult);
     }
 
-    @Lob
-    private List<Map<String, List<GitHubEntity>>> repoSearchResults;
-
-    @Lob
-    private List<Map<String, List<GitHubEntity>>> fileSearchResults;
-
-
     public List<Map<String, List<GitHubEntity>>> getUserSearchResults() {
         return userSearchResults;
-    }
-
-    public void setUserSearchResults(List<Map<String, List<GitHubEntity>>> userSearchResults) {
-        this.userSearchResults = userSearchResults;
     }
 
     public List<Map<String, List<GitHubEntity>>> getContentSearchResults() {
         return contentSearchResults;
     }
 
-    public void setContentSearchResults(List<Map<String, List<GitHubEntity>>> contentSearchResults) {
-        this.contentSearchResults = contentSearchResults;
-    }
-
-    public List<Map<String, List<GitHubEntity>>> getRepoSearchResults() {
-        return repoSearchResults;
-    }
-
-    public void setRepoSearchResults(List<Map<String, List<GitHubEntity>>> repoSearchResults) {
-        this.repoSearchResults = repoSearchResults;
-    }
-
     public List<Map<String, List<GitHubEntity>>> getFileSearchResults() {
         return fileSearchResults;
-    }
-
-    public void setFileSearchResults(List<Map<String, List<GitHubEntity>>> fileSearchResults) {
-        this.fileSearchResults = fileSearchResults;
     }
 }
