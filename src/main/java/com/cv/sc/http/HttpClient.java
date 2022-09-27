@@ -5,6 +5,7 @@ import com.google.api.client.http.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -21,11 +22,17 @@ public class HttpClient {
 
     private HttpRequest httpRequest;
 
+    private String content;
+
     public HttpClient(String url, Map<String, String> queryParams, Map<String, String> headers, HttpMethod httpMethod) {
         this.url = url;
         this.queryParams = queryParams;
         this.headers = headers;
         this.httpMethod = httpMethod;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public HttpResponse exchange() throws HttpClientException, IOException {
@@ -57,6 +64,9 @@ public class HttpClient {
             System.out.println(genericUrl);
         } else if(httpMethod.equals(HttpMethod.POST)) {
             httpRequest = requestFactory.buildPostRequest(new GenericUrl(url), new UrlEncodedContent(queryParams));
+            if(content != null) {
+                httpRequest.setContent(ByteArrayContent.fromString("application/json", content));
+            }
         }
 
         if(httpRequest == null) {

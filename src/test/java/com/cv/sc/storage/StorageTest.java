@@ -6,6 +6,8 @@ import com.cv.sc.model.SearchResult;
 import com.cv.sc.storage.impl.DBStorageServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
@@ -14,6 +16,8 @@ import java.util.Date;
  * Date: 15/09/22
  */
 public class StorageTest {
+    private StorageService dbStorageService = new DBStorageServiceImpl();
+
 
     public static final String SAMPLE_RESULT = "{\n" +
             "    \"total_count\": 1,\n" +
@@ -30,8 +34,6 @@ public class StorageTest {
 
     @Test
     public void testDBStorage() throws UnsupportedEncodingException {
-        StorageService dbStorageService = new DBStorageServiceImpl();
-
         // Save config in db
         Config config = getConfig();
         dbStorageService.save(config);
@@ -44,6 +46,26 @@ public class StorageTest {
         SearchResult searchResult = getSearchResult(searchParent);
         dbStorageService.save(searchResult);
         Assert.assertNotNull(searchResult.getId());
+    }
+
+    @Test
+    public void updateTest() throws IOException {
+        // Save config in db
+        Config config = getConfig();
+        dbStorageService.save(config);
+        // save search parent in db
+        SearchParent searchParent = getSearchParent(config);
+        dbStorageService.save(searchParent);
+
+        SearchResult searchResult = getSearchResult(searchParent);
+        searchResult = (SearchResult) dbStorageService.save(searchResult);
+
+        searchResult.setQueryUrl("http://test_updated_query_url");
+        searchResult.setJsonResult("Updated Result inside TEST");
+        SearchResult searchResultUpdated = (SearchResult) dbStorageService.update(searchResult);
+
+        Assert.assertTrue(searchResultUpdated.getJsonResult().equals("Updated Result inside TEST"));
+        Assert.assertTrue(searchResultUpdated.getQueryUrl().equals("http://test_updated_query_url"));
     }
 
     private SearchResult getSearchResult(SearchParent searchParent) {

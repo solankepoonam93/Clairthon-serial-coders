@@ -52,9 +52,11 @@ public class EntityController<T extends SCEntity> implements SCController {
         return (T) dbStorageService.delete(entityClass, id);
     }
 
-    @PostMapping(path = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public T update(T value) throws IOException {
-        return (T) dbStorageService.update(value);
+    @PostMapping(path = "/update/{entityName}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public T update(@PathVariable String entityName, @RequestBody String entityJson) throws IOException {
+        Class<T> entityClass = EntityTypes.getEntityClass(entityName);
+        T t = objectMapper.readValue(entityJson, entityClass);
+        return (T) dbStorageService.update(t);
     }
 
     @GetMapping(path = "/fetchAll/{entityName}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

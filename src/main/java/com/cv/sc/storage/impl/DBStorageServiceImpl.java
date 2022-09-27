@@ -39,7 +39,15 @@ public class DBStorageServiceImpl implements StorageService {
 
     @Override
     public Object update(Object value) throws IOException {
-        return null;
+
+        try {
+            entityManager.getTransaction().begin();
+            value = entityManager.merge(value);
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            throw e;
+        }
+        return value;
     }
 
     public List findAll(Class entityClass) {

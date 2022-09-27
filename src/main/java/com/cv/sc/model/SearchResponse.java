@@ -29,6 +29,7 @@ public class SearchResponse {
         fileSearchResults = new ArrayList<>();
     }
 
+
     // [
     // userSearchTerm1: result1, result2, result3,
     // userSearchTerm2: result1, result2, result3,
