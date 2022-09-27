@@ -31,6 +31,8 @@ public class Config implements SCEntity {
     @Temporal(TIMESTAMP)
     private Date modifiedDate;
 
+    private Boolean isScheduled;
+
     public Long getId() {
         return id;
     }
@@ -115,6 +117,16 @@ public class Config implements SCEntity {
                 ", customerName='" + customerName + '\'' +
                 ", modifiedBy='" + modifiedBy + '\'' +
                 ", modifiedDate=" + modifiedDate +
+                ", isScheduled=" + isScheduled +
                 '}';
+    }
+
+
+    public Boolean getScheduled() {
+        return isScheduled;
+    }
+
+    public void setScheduled(Boolean scheduled) {
+        isScheduled = scheduled;
     }
 }

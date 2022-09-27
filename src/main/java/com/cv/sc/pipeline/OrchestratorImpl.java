@@ -11,13 +11,21 @@ import com.cv.sc.storage.impl.DBStorageServiceImpl;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
+import java.util.Objects;
 
 public class OrchestratorImpl implements Orchestrator{
 
+    private static OrchestratorImpl instance;
     private StorageService storageService;
 
     private Searcher gitHubSearcher;
 
+    public static OrchestratorImpl getInstance() {
+        if (instance == null) {
+            instance = new OrchestratorImpl();
+        }
+        return instance;
+    }
     public OrchestratorImpl() {
         storageService = new DBStorageServiceImpl();
         gitHubSearcher = GitHubSearcher.getInstance();
@@ -28,16 +36,22 @@ public class OrchestratorImpl implements Orchestrator{
 
         SearchResponse searchResponse = new SearchResponse();
 
-        for(String searchTerm: config.getUserSearchKeywords()) {
-            searchResponse.addUserSearchResult(Map.of(searchTerm, gitHubSearcher.getUserSearchResult(searchTerm)));
+        if (Objects.nonNull(config.getUserSearchKeywords())) {
+            for (String searchTerm : config.getUserSearchKeywords()) {
+                searchResponse.addUserSearchResult(Map.of(searchTerm, gitHubSearcher.getUserSearchResult(searchTerm)));
+            }
         }
 
-        for(String searchTerm: config.getCodeSearchKeywords()) {
-            searchResponse.addContentSearch(Map.of(searchTerm, gitHubSearcher.getContentSearchResult(searchTerm)));
+        if (Objects.nonNull(config.getCodeSearchKeywords())) {
+            for (String searchTerm : config.getCodeSearchKeywords()) {
+                searchResponse.addContentSearch(Map.of(searchTerm, gitHubSearcher.getContentSearchResult(searchTerm)));
+            }
         }
 
-        for(String searchTerm: config.getFileNames()) {
-            searchResponse.addFileSearchResult(Map.of(searchTerm, gitHubSearcher.getFileSearchResult(searchTerm)));
+        if(Objects.nonNull(config.getFileNames())) {
+            for (String searchTerm : config.getFileNames()) {
+                searchResponse.addFileSearchResult(Map.of(searchTerm, gitHubSearcher.getFileSearchResult(searchTerm)));
+            }
         }
 
         // TODO Repo Search

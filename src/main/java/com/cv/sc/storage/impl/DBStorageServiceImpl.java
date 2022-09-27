@@ -54,4 +54,7 @@ public class DBStorageServiceImpl implements StorageService {
         return entityManager.createQuery("Select t from " + entityClass.getSimpleName() + " t").getResultList();
     }
 
+    public List getScheduledConfig () {
+        return entityManager.createQuery("Select c from Config c where isScheduled = true ").getResultList();
+    }
 }
