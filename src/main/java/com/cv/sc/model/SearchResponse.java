@@ -3,13 +3,24 @@ package com.cv.sc.model;
 import com.cv.sc.model.github.GitHubEntity;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Entity
 public class SearchResponse {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public SearchResponse() {
         userSearchResults = new ArrayList<>();
@@ -18,19 +29,12 @@ public class SearchResponse {
         fileSearchResults = new ArrayList<>();
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @NotNull
-    @ManyToOne
-    private Config config;
-
     // [
     // userSearchTerm1: result1, result2, result3,
     // userSearchTerm2: result1, result2, result3,
     // userSearchTerm3: result1, result2, result3
     // ]
+
     @Lob
     private List<Map<String, List<GitHubEntity>>> userSearchResults;
 
@@ -48,12 +52,6 @@ public class SearchResponse {
     // repoSearchTerm3: result1, result2, result3
     // ]
 
-    @Lob
-    private List<Map<String, List<GitHubEntity>>> repoSearchResults;
-
-    @Lob
-    private List<Map<String, List<GitHubEntity>>> fileSearchResults;
-
     public void addUserSearchResult(Map<String, List<GitHubEntity>> userResult) {
         userSearchResults.add(userResult);
     }
@@ -70,7 +68,11 @@ public class SearchResponse {
         fileSearchResults.add(fileResult);
     }
 
+    @Lob
+    private List<Map<String, List<GitHubEntity>>> repoSearchResults;
 
+    @Lob
+    private List<Map<String, List<GitHubEntity>>> fileSearchResults;
 
 
     public List<Map<String, List<GitHubEntity>>> getUserSearchResults() {
@@ -103,21 +105,5 @@ public class SearchResponse {
 
     public void setFileSearchResults(List<Map<String, List<GitHubEntity>>> fileSearchResults) {
         this.fileSearchResults = fileSearchResults;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Config getConfig() {
-        return config;
-    }
-
-    public void setConfig(Config config) {
-        this.config = config;
     }
 }

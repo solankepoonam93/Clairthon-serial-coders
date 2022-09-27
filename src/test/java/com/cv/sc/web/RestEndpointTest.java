@@ -4,9 +4,12 @@ import com.cv.sc.exception.HttpClientException;
 import com.cv.sc.http.HttpClient;
 import com.cv.sc.http.HttpMethod;
 import com.cv.sc.model.APIResponse;
+import com.cv.sc.model.Config;
 import com.cv.sc.model.SearchResult;
 import com.cv.sc.web.controller.impl.BasicAuthenticationController;
 import com.cv.sc.web.controller.impl.EntityController;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.http.HttpResponse;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,10 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created By: bhushan.karmarkar12@gmail.com
@@ -33,7 +33,7 @@ import java.util.Map;
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @EnableAutoConfiguration
 @AutoConfigureMockMvc
-public class RestEndpointTests extends WebTests {
+public class RestEndpointTest extends WebTests {
     @Test
     public void testAuthentication() throws HttpClientException, IOException {
         APIResponse apiResponse = getToken();
@@ -60,6 +60,20 @@ public class RestEndpointTests extends WebTests {
         Assert.assertTrue(searchResult.getId().equals(1L));
         Assert.assertEquals("TEST_CONFIG", searchResult.getSearchParent().getConfig().getConfigName());
     }
+
+    @Test
+    public void testFetchAll() throws HttpClientException, IOException {
+        String token = (String) getToken().getResponse();
+        HttpClient httpClient = getHttpClient(fetchAllUrl(),
+                Collections.emptyMap(), getHeaderMapContainingSCToken(token), HttpMethod.GET);
+        HttpResponse response = httpClient.exchange();
+        List<Config> configList = new ObjectMapper().readValue(response.parseAsString(), new TypeReference<ArrayList < Config >>()
+        {
+        });
+        Assert.assertNotNull(configList);
+        Assert.assertTrue(configList.size()>0);
+        Assert.assertEquals("TEST_CONFIG", configList.get(0).getConfigName());
+    }
     
     protected Map<String, String> getHeaderMapContainingCredentials() {
         Map<String, String> headers = new HashMap<>();
@@ -75,10 +89,15 @@ public class RestEndpointTests extends WebTests {
         return headers;
     }
     private String getAuthenticationUrl() {
-        return "http://localhost:8080/auth/basic";
+        return "http://localhost:8090/auth/basic";
     }
 
     private String getFetchUrl() {
-        return "http://localhost:8080/dao/fetch/SearchResult/1";
+        return "http://localhost:8090/dao/fetch/SearchResult/1";
     }
+
+    private String fetchAllUrl() {
+        return "http://localhost:8090/dao/fetchAll/Config";
+    }
+
 }
