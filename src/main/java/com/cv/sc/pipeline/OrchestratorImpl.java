@@ -54,9 +54,6 @@ public class OrchestratorImpl implements Orchestrator {
             }
         }
 
-        // TODO Repo Search
-        //Repo Search
-
         searchResponse = saveSearchResult(searchResponse);
         return searchResponse;
     }

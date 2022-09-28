@@ -8,18 +8,28 @@ import com.cv.sc.model.Config;
 import com.cv.sc.model.SearchResult;
 import com.cv.sc.web.controller.impl.BasicAuthenticationController;
 import com.cv.sc.web.controller.impl.EntityController;
+import com.cv.sc.web.filter.AuthenticationFilter;
+import com.cv.sc.web.filter.FilterConfiguration;
+import com.cv.sc.web.listener.SCApplicationListener;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.http.HttpResponse;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
+import javax.servlet.Filter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -29,11 +39,25 @@ import java.util.*;
  * Date: 21/09/22
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {EntityController.class, BasicAuthenticationController.class},
+@SpringBootTest(classes = {SCApplicationListener.class, FilterConfiguration.class, AuthenticationFilter.class, EntityController.class, BasicAuthenticationController.class},
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @EnableAutoConfiguration
 @AutoConfigureMockMvc
 public class RestEndpointTest extends WebTests {
+
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+    @Autowired
+    @Qualifier("authenticationFilter")
+    private Filter authenticationFilter;
+    private MockMvc mockMvc;
+
+    @Before
+    public void setUp(){
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .addFilter(authenticationFilter, "/*").build();
+    }
+
     @Test
     public void testAuthentication() throws HttpClientException, IOException {
         APIResponse apiResponse = getToken();

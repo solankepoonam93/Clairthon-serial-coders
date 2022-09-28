@@ -1,6 +1,7 @@
 package com.cv.sc.web.filter;
 
 import com.cv.sc.cache.TokenCache;
+import org.springframework.context.annotation.Bean;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
