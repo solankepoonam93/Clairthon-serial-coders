@@ -38,17 +38,10 @@ public class BasicAuthenticationController<T extends SCEntity> implements Authen
         if("admin".equalsIgnoreCase(split[0]) && "bkpune".equals(split[1])) { // username always case-insensitive
             apiResponse = buildAPIResponse(HttpStatus.OK, buildToken(), null);
         } else {
-            apiResponse = buildAPIResponse(HttpStatus.UNAUTHORIZED, null, getErrorMessage(HttpStatus.UNAUTHORIZED));
+            apiResponse = buildAPIResponse(HttpStatus.UNAUTHORIZED, null, "You are not Authorized to use this API. Please pass valid token.");
         }
 
         return apiResponse;
-    }
-
-    private String getErrorMessage(HttpStatus responseCode) {
-        if(responseCode.equals(HttpStatus.UNAUTHORIZED)) {
-            return "You are not Authorized to use this API. Please pass valid token.";
-        }
-        return null;
     }
 
     private String buildToken() {

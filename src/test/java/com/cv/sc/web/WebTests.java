@@ -26,7 +26,7 @@ public abstract class WebTests {
     }
 
     protected String getQueryParamForUserSearch() {
-        return  GitHubEndpoints.USER_SEARCH_ENDPOINT + "?q=solankepoonam in:user";
+        return  GitHubEndpoints.USER_SEARCH_ENDPOINT + "?q=solankepooja in:user";
     }
 
     protected Map<String, String> getHeaderMapContainingGitToken() {
