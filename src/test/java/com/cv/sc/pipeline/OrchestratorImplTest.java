@@ -22,10 +22,10 @@ public class OrchestratorImplTest {
         Config config = new Config();
         config.setId(1L);
         config.setConfigName("test1");
-        config.setCodeSearchKeywords(new String[]{"CountAboveSixty"});
+        config.setCodeSearchKeywords(new String[]{"sortByPercentage"});
         config.setCustomerName("TestCustomer1");
-        config.setUserSearchKeywords(new String[]{"AmrutaChichani"});
-        config.setFileNames(new String[] {"OrchestratorImplTest"});
+        config.setUserSearchKeywords(new String[]{"bhushank"});
+        config.setFileNames(new String[] {"SCApplicationImplTest"});
         config.setRepositoryNames(new String[]{"clairthon-serial-coders"});
         return config;
     }

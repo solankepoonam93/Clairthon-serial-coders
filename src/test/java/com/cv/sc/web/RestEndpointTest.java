@@ -34,16 +34,38 @@ import java.util.*;
 @EnableAutoConfiguration
 @AutoConfigureMockMvc
 public class RestEndpointTest extends WebTests {
+
+    private String validCred= "admin:bkpune";
+
+
     @Test
-    public void testAuthentication() throws HttpClientException, IOException {
-        APIResponse apiResponse = getToken();
+    public void testAuthenticationPositiveCase() throws HttpClientException, IOException {
+        APIResponse apiResponse = getToken(validCred);
         Assert.assertNotNull(apiResponse.getResponse()); // token granted
         Assert.assertEquals(apiResponse.getResponseStatus(), HttpStatus.OK);
     }
 
-    private APIResponse getToken() throws HttpClientException, IOException {
+    @Test
+    public void testAuthenticationNegativeCase1() throws HttpClientException, IOException {
+        APIResponse apiResponse = getToken("admin:poonam");
+        Assert.assertEquals(apiResponse.getResponseStatus(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @Test
+    public void testAuthenticationNegativeCase2() throws HttpClientException, IOException {
+        APIResponse apiResponse = getToken("root:poonam");
+        Assert.assertEquals(apiResponse.getResponseStatus(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @Test
+    public void testAuthenticationNegativeCase3() throws HttpClientException, IOException {
+        APIResponse apiResponse = getToken("root:bhushan");
+        Assert.assertEquals(apiResponse.getResponseStatus(), HttpStatus.UNAUTHORIZED);
+    }
+
+    private APIResponse getToken(String credentials) throws HttpClientException, IOException {
         HttpClient httpClient = getHttpClient(getAuthenticationUrl(),
-                Collections.emptyMap(), getHeaderMapContainingCredentials(), HttpMethod.GET);
+                Collections.emptyMap(), getHeaderMapContainingCredentials(credentials), HttpMethod.GET);
         HttpResponse response = httpClient.exchange();
         APIResponse apiResponse = objectMapper.readValue(response.parseAsString(), APIResponse.class);
         return apiResponse;
@@ -51,7 +73,7 @@ public class RestEndpointTest extends WebTests {
 
     @Test
     public void testFetch() throws HttpClientException, IOException {
-        String token = (String) getToken().getResponse();
+        String token = (String) getToken(validCred).getResponse();
         String responseString = fetchEntity(token);
         SearchResult searchResult = objectMapper.readValue(responseString, SearchResult.class);
         Assert.assertNotNull(searchResult);
@@ -61,7 +83,7 @@ public class RestEndpointTest extends WebTests {
 
     @Test
     public void testFetchAll() throws HttpClientException, IOException {
-        String token = (String) getToken().getResponse();
+        String token = (String) getToken(validCred).getResponse();
         HttpClient httpClient = getHttpClient(fetchAllUrl(),
                 Collections.emptyMap(), getHeaderMapContainingSCToken(token), HttpMethod.GET);
         HttpResponse response = httpClient.exchange();
@@ -75,7 +97,7 @@ public class RestEndpointTest extends WebTests {
 
     @Test
     public void testUpdate() throws HttpClientException, IOException {
-        String token = (String) getToken().getResponse();
+        String token = (String) getToken(validCred).getResponse();
         String responseString = fetchEntity(token);
 
         SearchResult searchResult = objectMapper.readValue(responseString, SearchResult.class);
@@ -102,13 +124,12 @@ public class RestEndpointTest extends WebTests {
         return response.parseAsString();
     }
 
-    protected Map<String, String> getHeaderMapContainingCredentials() {
+    protected Map<String, String> getHeaderMapContainingCredentials(String credentials) {
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
-        headers.put("Authorization","Basic "+ Base64.getEncoder().encodeToString("admin:bkpune".getBytes(StandardCharsets.UTF_8)));
+        headers.put("Authorization","Basic "+ Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8)));
         return headers;
     }
-
     protected Map<String, String> getHeaderMapContainingSCToken(String token) {
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
