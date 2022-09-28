@@ -3,6 +3,8 @@ package com.cv.sc.pipeline.searcher;
 import com.cv.sc.exception.HttpClientException;
 import com.cv.sc.http.HttpClient;
 import com.cv.sc.http.HttpMethod;
+import com.cv.sc.model.Config;
+import com.cv.sc.model.SearchResponse;
 import com.cv.sc.model.github.GitHubContentSearch;
 import com.cv.sc.model.github.GitHubEntity;
 import com.cv.sc.model.github.GitHubFileSearch;
@@ -23,7 +25,6 @@ import java.util.*;
  * Date: 22/09/22
  */
 public class GitHubSearcher implements Searcher {
-
     private static GitHubSearcher instance;
 
     private GitHubSearcher() {
@@ -36,7 +37,7 @@ public class GitHubSearcher implements Searcher {
         return instance;
     }
 
-    public List<GitHubEntity> getUserSearchResult(String searchTerm) throws HttpClientException, IOException {
+    public List<GithubUser> getUserSearchResult(String searchTerm) throws HttpClientException, IOException {
         Map<String,String> params = new HashMap<>();
         params.put(Constants.QUERY, searchTerm);
         params.put(Constants.QUERY_QUALIFIER_IN, Constants.QUERY_QUALIFIER_USER);
@@ -50,21 +51,21 @@ public class GitHubSearcher implements Searcher {
         return extract(userResponseString, GithubUser.class);
     }
 
-    public List<GitHubEntity> extract(String userResponseString, Class<? extends GitHubEntity> clazz) throws JsonProcessingException {
-        List<GitHubEntity> entityList = new ArrayList<>(10);
+    public  <T extends GitHubEntity> List<T>  extract(String userResponseString, Class<T> clazz) throws JsonProcessingException {
+        List<T> entityList = new ArrayList<>(10);
         ObjectMapper objectMapperForParsingResult = ObjectMapperProvider.getObjectMapperForParsingResult();
         JsonNode items = objectMapperForParsingResult.readTree(userResponseString).get("items");
         Iterator<JsonNode> iterator = items.iterator();
         while (iterator.hasNext()) {
             JsonNode next = iterator.next();
             String s = next.toString();
-            GitHubEntity gitHubEntity = objectMapperForParsingResult.readValue(s, clazz);
+            T gitHubEntity = objectMapperForParsingResult.readValue(s, clazz);
             entityList.add(gitHubEntity);
         }
         return entityList;
     }
 
-    public List<GitHubEntity> getFileSearchResult(String searchTerm) throws HttpClientException, IOException {
+    public List<GitHubFileSearch> getFileSearchResult(String searchTerm) throws HttpClientException, IOException {
         Map<String,String> params = new HashMap<>();
         params.put(Constants.QUERY, null);
         params.put(Constants.QUERY_QUALIFIER_FILENAME, searchTerm);
@@ -78,7 +79,31 @@ public class GitHubSearcher implements Searcher {
         return extract(fileResponseString, GitHubFileSearch.class);
     }
 
-    public List<GitHubEntity> getContentSearchResult(String searchTerm) throws HttpClientException, IOException {
+    @Override
+    public SearchResponse search(Config config) throws HttpClientException, IOException {
+        SearchResponse searchResponse = new SearchResponse();
+
+        if (Objects.nonNull(config.getUserSearchKeywords())) {
+            for (String searchTerm : config.getUserSearchKeywords()) {
+                searchResponse.addUserSearchResult(Map.of(searchTerm, getUserSearchResult(searchTerm)));
+            }
+        }
+
+        if (Objects.nonNull(config.getCodeSearchKeywords())) {
+            for (String searchTerm : config.getCodeSearchKeywords()) {
+                searchResponse.addContentSearch(Map.of(searchTerm, getContentSearchResult(searchTerm)));
+            }
+        }
+
+        if(Objects.nonNull(config.getFileNames())) {
+            for (String searchTerm : config.getFileNames()) {
+                searchResponse.addFileSearchResult(Map.of(searchTerm, getFileSearchResult(searchTerm)));
+            }
+        }
+        return searchResponse;
+    }
+
+    public List<GitHubContentSearch> getContentSearchResult(String searchTerm) throws HttpClientException, IOException {
         String codeRequestUrl= getRequestUrlQuery(GitHubEndpoints.CODE_SEARCH_ENDPOINT,
                 Map.of(Constants.QUERY, searchTerm));
         HttpClient codeHttpClient = new HttpClient(codeRequestUrl,

@@ -1,6 +1,10 @@
 package com.cv.sc.model;
 
+import com.cv.sc.model.github.GitHubContentSearch;
 import com.cv.sc.model.github.GitHubEntity;
+import com.cv.sc.model.github.GitHubFileSearch;
+import com.cv.sc.model.github.GithubUser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,11 +28,11 @@ public class SearchResponse implements SCEntity {
     @Transient
     private ObjectMapper objectMapper;
     @Transient
-    private List<Map<String, List<GitHubEntity>>> userSearchResults;
+    private List<Map<String, List<GithubUser>>> userSearchResults;
     @Transient
-    private List<Map<String, List<GitHubEntity>>> contentSearchResults;
+    private List<Map<String, List<GitHubContentSearch>>> contentSearchResults;
     @Transient
-    private List<Map<String, List<GitHubEntity>>> fileSearchResults;
+    private List<Map<String, List<GitHubFileSearch>>> fileSearchResults;
 
     public SearchResponse() {
         userSearchResults = new ArrayList<>();
@@ -73,30 +77,30 @@ public class SearchResponse implements SCEntity {
         this.fileSearchJsonResultString = fileSearchJsonResultString;
     }
 
-    public void addUserSearchResult(Map<String, List<GitHubEntity>> userResult) {
+    public void addUserSearchResult(Map<String, List<GithubUser>> userResult) {
         userSearchResults.add(userResult);
     }
 
-    public void addContentSearch(Map<String, List<GitHubEntity>> contentResult) {
+    public void addContentSearch(Map<String, List<GitHubContentSearch>> contentResult) {
         contentSearchResults.add(contentResult);
     }
 
-    public void addFileSearchResult(Map<String, List<GitHubEntity>> fileResult) {
+    public void addFileSearchResult(Map<String, List<GitHubFileSearch>> fileResult) {
         fileSearchResults.add(fileResult);
     }
 
     @Transient
-    public List<Map<String, List<GitHubEntity>>> getUserSearchResults() {
+    public List<Map<String, List<GithubUser>>> getUserSearchResults() {
         return userSearchResults;
     }
 
     @Transient
-    public List<Map<String, List<GitHubEntity>>> getContentSearchResults() {
+    public List<Map<String, List<GitHubContentSearch>>> getContentSearchResults() {
         return contentSearchResults;
     }
 
     @Transient
-    public List<Map<String, List<GitHubEntity>>> getFileSearchResults() {
+    public List<Map<String, List<GitHubFileSearch>>> getFileSearchResults() {
         return fileSearchResults;
     }
 
@@ -105,19 +109,20 @@ public class SearchResponse implements SCEntity {
         return objectMapper;
     }
 
+    @JsonIgnore
     public void setObjectMapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
-    public void setUserSearchResults(List<Map<String, List<GitHubEntity>>> userSearchResults) {
+    public void setUserSearchResults(List<Map<String, List<GithubUser>>> userSearchResults) {
         this.userSearchResults = userSearchResults;
     }
 
-    public void setContentSearchResults(List<Map<String, List<GitHubEntity>>> contentSearchResults) {
+    public void setContentSearchResults(List<Map<String, List<GitHubContentSearch>>> contentSearchResults) {
         this.contentSearchResults = contentSearchResults;
     }
 
-    public void setFileSearchResults(List<Map<String, List<GitHubEntity>>> fileSearchResults) {
+    public void setFileSearchResults(List<Map<String, List<GitHubFileSearch>>> fileSearchResults) {
         this.fileSearchResults = fileSearchResults;
     }
 }

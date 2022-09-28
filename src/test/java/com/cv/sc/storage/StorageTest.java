@@ -70,19 +70,19 @@ public class StorageTest {
     }
     private SearchResponse getTestSearchResponse() {
         SearchResponse searchResponse = new SearchResponse();
-        List<GitHubEntity> userList = new ArrayList<>();
+        List<GithubUser> userList = new ArrayList<>();
         GithubUser user = new GithubUser();
         user.setLogin("bkpune");
         userList.add(user);
         searchResponse.addUserSearchResult(Map.of("users", userList));
 
-        List<GitHubEntity> contentList = new ArrayList<>();
+        List<GitHubContentSearch> contentList = new ArrayList<>();
         GitHubContentSearch contentSearch = new GitHubContentSearch();
         contentSearch.setName("Test Content");
         contentList.add(contentSearch);
         searchResponse.addContentSearch(Map.of("content", contentList));
 
-        List<GitHubEntity> fileList = new ArrayList<>();
+        List<GitHubFileSearch> fileList = new ArrayList<>();
         GitHubFileSearch fileSearch = new GitHubFileSearch();
         fileSearch.setName("Test File Search");
         fileList.add(fileSearch);

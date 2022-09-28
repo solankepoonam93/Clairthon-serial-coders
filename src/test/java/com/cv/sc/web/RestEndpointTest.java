@@ -6,9 +6,11 @@ import com.cv.sc.http.HttpClient;
 import com.cv.sc.http.HttpMethod;
 import com.cv.sc.model.APIResponse;
 import com.cv.sc.model.Config;
+import com.cv.sc.model.SearchResponse;
 import com.cv.sc.model.SearchResult;
 import com.cv.sc.web.controller.impl.BasicAuthenticationController;
 import com.cv.sc.web.controller.impl.EntityController;
+import com.cv.sc.web.controller.impl.SearchController;
 import com.cv.sc.web.filter.AuthenticationFilter;
 import com.cv.sc.web.filter.FilterConfiguration;
 import com.cv.sc.web.listener.SCApplicationListener;
@@ -40,7 +42,7 @@ import java.util.*;
  * Date: 21/09/22
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {SCApplicationListener.class, FilterConfiguration.class, AuthenticationFilter.class, EntityController.class, BasicAuthenticationController.class},
+@SpringBootTest(classes = {SearchController.class, SCApplicationListener.class, FilterConfiguration.class, AuthenticationFilter.class, EntityController.class, BasicAuthenticationController.class},
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @EnableAutoConfiguration
 @AutoConfigureMockMvc
@@ -146,6 +148,22 @@ public class RestEndpointTest extends WebTests {
         Assert.assertEquals("TEST_CONFIG", searchResultUpdated.getSearchParent().getConfig().getConfigName());
         Assert.assertTrue(searchResultUpdated.getJsonResult().equals("Updated Result inside TEST"));
         Assert.assertTrue(searchResultUpdated.getQueryUrl().equals("http://test_updated_query_url"));
+    }
+
+
+    @Test
+    public void testSearch() throws HttpClientException, IOException {
+        HttpClient httpClient = getHttpClient(getSearchUrl(),
+                Collections.emptyMap(), getHeaderMapContainingSCToken((String) getToken(validCred).getResponse()), HttpMethod.GET);
+        HttpResponse response = httpClient.exchange();
+        SearchResponse searchResponse = objectMapper.readValue(response.parseAsString(), SearchResponse.class);
+        Assert.assertTrue(searchResponse.getId() != null);
+        Assert.assertTrue(searchResponse.getFileSearchJsonResultString()!= null);
+        Assert.assertTrue(searchResponse.getUserSearchResults().size() > 0);
+    }
+
+    private String getSearchUrl() {
+        return "http://localhost:8090/search/config/1?test=true"; // test = 1 for not to make actual calls
     }
 
     private String fetchEntity(String token) throws HttpClientException, IOException {

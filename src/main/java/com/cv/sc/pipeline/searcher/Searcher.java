@@ -1,8 +1,12 @@
 package com.cv.sc.pipeline.searcher;
 
 import com.cv.sc.exception.HttpClientException;
-import com.cv.sc.model.SCEntity;
+import com.cv.sc.model.Config;
+import com.cv.sc.model.SearchResponse;
+import com.cv.sc.model.github.GitHubContentSearch;
 import com.cv.sc.model.github.GitHubEntity;
+import com.cv.sc.model.github.GitHubFileSearch;
+import com.cv.sc.model.github.GithubUser;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,10 +18,11 @@ import java.util.List;
 public interface Searcher {
 
 
-    List<GitHubEntity> getUserSearchResult(String searchTerm) throws HttpClientException, IOException;
+    List<GithubUser> getUserSearchResult(String searchTerm) throws HttpClientException, IOException;
 
-    List<GitHubEntity> getContentSearchResult(String searchTerm) throws HttpClientException, IOException;
+    List<GitHubContentSearch> getContentSearchResult(String searchTerm) throws HttpClientException, IOException;
 
-    List<GitHubEntity> getFileSearchResult(String searchTerm) throws HttpClientException, IOException;
+    List<GitHubFileSearch> getFileSearchResult(String searchTerm) throws HttpClientException, IOException;
 
+    SearchResponse search(Config config) throws HttpClientException, IOException;
 }

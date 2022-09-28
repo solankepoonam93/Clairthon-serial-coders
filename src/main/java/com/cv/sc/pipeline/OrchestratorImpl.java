@@ -33,27 +33,7 @@ public class OrchestratorImpl implements Orchestrator {
 
     @Override
     public SearchResponse search(Config config) throws HttpClientException, IOException {
-
-        SearchResponse searchResponse = new SearchResponse();
-
-        if (Objects.nonNull(config.getUserSearchKeywords())) {
-            for (String searchTerm : config.getUserSearchKeywords()) {
-                searchResponse.addUserSearchResult(Map.of(searchTerm, gitHubSearcher.getUserSearchResult(searchTerm)));
-            }
-        }
-
-        if (Objects.nonNull(config.getCodeSearchKeywords())) {
-            for (String searchTerm : config.getCodeSearchKeywords()) {
-                searchResponse.addContentSearch(Map.of(searchTerm, gitHubSearcher.getContentSearchResult(searchTerm)));
-            }
-        }
-
-        if(Objects.nonNull(config.getFileNames())) {
-            for (String searchTerm : config.getFileNames()) {
-                searchResponse.addFileSearchResult(Map.of(searchTerm, gitHubSearcher.getFileSearchResult(searchTerm)));
-            }
-        }
-
+        SearchResponse searchResponse = gitHubSearcher.search(config);
         searchResponse = saveSearchResult(searchResponse);
         return searchResponse;
     }

@@ -33,7 +33,7 @@ public class ParseTests {
 
     @Test
     public void testUserDeserialization() throws JsonProcessingException {
-        List<GitHubEntity> extract = searcher.extract(USER_SEARCH_RESULT_JSON, GithubUser.class);
+        List<GithubUser> extract = searcher.extract(USER_SEARCH_RESULT_JSON, GithubUser.class);
         Assert.assertFalse(extract.isEmpty());
         Assert.assertTrue(((GithubUser)(extract.get(0))).getLogin() != null);
     }
@@ -41,7 +41,7 @@ public class ParseTests {
 
     @Test
     public void testContentDeserialization() throws JsonProcessingException {
-        List<GitHubEntity> extract = searcher.extract(CONTENT_SEARCH_RESULT_JSON, GitHubContentSearch.class);
+        List<GitHubContentSearch> extract = searcher.extract(CONTENT_SEARCH_RESULT_JSON, GitHubContentSearch.class);
         Assert.assertFalse(extract.isEmpty());
         Assert.assertTrue(((GitHubContentSearch)(extract.get(0))).getName() != null);
         Assert.assertTrue(extract.size() == 2);
@@ -49,7 +49,7 @@ public class ParseTests {
 
     @Test
     public void testFileDeserialization() throws JsonProcessingException {
-        List<GitHubEntity> extract = searcher.extract(FILE_RESULT_JSON, GitHubContentSearch.class);
+        List<GitHubContentSearch> extract = searcher.extract(FILE_RESULT_JSON, GitHubContentSearch.class);
         Assert.assertFalse(extract.isEmpty());
         Assert.assertTrue(((GitHubContentSearch)(extract.get(0))).getName() != null);
         Assert.assertTrue(extract.size() == 2);
