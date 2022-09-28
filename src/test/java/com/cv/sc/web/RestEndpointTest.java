@@ -1,5 +1,6 @@
 package com.cv.sc.web;
 
+import com.cv.sc.cache.TokenCache;
 import com.cv.sc.exception.HttpClientException;
 import com.cv.sc.http.HttpClient;
 import com.cv.sc.http.HttpMethod;
@@ -47,8 +48,6 @@ public class RestEndpointTest extends WebTests {
 
     private String validCred= "admin:bkpune";
 
-
-
     @Autowired
     private WebApplicationContext webApplicationContext;
     @Autowired
@@ -85,6 +84,14 @@ public class RestEndpointTest extends WebTests {
     public void testAuthenticationNegativeCase3() throws HttpClientException, IOException {
         APIResponse apiResponse = getToken("root:bhushan");
         Assert.assertEquals(apiResponse.getResponseStatus(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @Test
+    public void logoutTest() throws HttpClientException, IOException {
+        APIResponse apiResponse = getToken(validCred);
+        String token = apiResponse.getResponse().toString();
+        TokenCache.removeToken(token);
+        Assert.assertFalse(TokenCache.isTokenPresent(token));
     }
 
     private APIResponse getToken(String credentials) throws HttpClientException, IOException {

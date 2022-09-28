@@ -7,6 +7,7 @@ import com.cv.sc.model.APIResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,6 +49,11 @@ public class BasicAuthenticationController<T extends SCEntity> implements Authen
         String token = UUID.randomUUID().toString();
         TokenCache.addToken(token);
         return token;
+    }
+
+    @PostMapping(value = "/logout", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    private void logout(String token){
+        TokenCache.removeToken(token);
     }
 
 }
