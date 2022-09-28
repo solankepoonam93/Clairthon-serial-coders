@@ -11,7 +11,16 @@ public class DBStorageServiceImpl implements StorageService {
 
     private EntityManager entityManager;
 
-    public DBStorageServiceImpl() {
+    private static DBStorageServiceImpl instance;
+
+    public static DBStorageServiceImpl getInstance() {
+        if(instance == null) {
+            instance = new DBStorageServiceImpl();
+        }
+        return instance;
+    }
+
+    private DBStorageServiceImpl() {
          entityManager = EntityManagerProvider.getInstance().getEntityManager();
     }
 

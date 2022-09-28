@@ -26,8 +26,7 @@ import java.util.Map;
  * Date: 15/09/22
  */
 public class StorageTest {
-    private StorageService dbStorageService = new DBStorageServiceImpl();
-
+    private StorageService dbStorageService = DBStorageServiceImpl.getInstance();
 
     public static final String SAMPLE_RESULT = "{\n" +
             "    \"total_count\": 1,\n" +

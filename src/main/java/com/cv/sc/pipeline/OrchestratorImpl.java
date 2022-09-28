@@ -13,7 +13,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Objects;
 
-public class OrchestratorImpl implements Orchestrator{
+public class OrchestratorImpl implements Orchestrator {
 
     private static OrchestratorImpl instance;
     private StorageService storageService;
@@ -27,7 +27,7 @@ public class OrchestratorImpl implements Orchestrator{
         return instance;
     }
     public OrchestratorImpl() {
-        storageService = new DBStorageServiceImpl();
+        storageService = DBStorageServiceImpl.getInstance();
         gitHubSearcher = GitHubSearcher.getInstance();
     }
 

@@ -27,7 +27,7 @@ public class EntityController<T extends SCEntity> implements SCController {
     private ObjectMapper objectMapper;
 
     public EntityController() {
-        this.dbStorageService = new DBStorageServiceImpl();
+        this.dbStorageService = DBStorageServiceImpl.getInstance();
         objectMapper = new ObjectMapper();
     }
 

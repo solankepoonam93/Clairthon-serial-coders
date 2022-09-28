@@ -16,41 +16,41 @@ import java.util.List;
 @Component
 public class SCApplicationListener implements ApplicationListener {
 
-    private DBStorageServiceImpl storageService = new DBStorageServiceImpl();
+    private DBStorageServiceImpl storageService = DBStorageServiceImpl.getInstance();
 
-        @Override
-        public void onApplicationEvent(ApplicationEvent event) {
-            if (event instanceof ApplicationStartedEvent) {
-                ApplicationContext applicationContext = ((ApplicationStartedEvent) event).getApplicationContext();
-                createScheduler();
-            }
-        }
-
-        private void createScheduler() {
+    @Override
+    public void onApplicationEvent(ApplicationEvent event) {
+        if (event instanceof ApplicationStartedEvent) {
             try {
-                List<Config> scheduledConfigList =(List<Config>) storageService.getScheduledConfig();
-                for (Config configItem: scheduledConfigList) {
-                    JobDataMap dataMap = new JobDataMap();
-                    dataMap.put("config", configItem);
-                    JobDetail jobDetail = JobBuilder.newJob(SearchJob.class)
-                            .withIdentity("job_" + configItem.getId())
-                            .usingJobData(dataMap)
-                            .build();
-
-                    Trigger trigger = TriggerBuilder.newTrigger()
-                            .withIdentity("trigger_" + configItem.getId()).startNow()
-                            .withSchedule(
-                                    SimpleScheduleBuilder.simpleSchedule()
-                                            .withIntervalInMinutes(1).repeatForever())
-                            .build();
-
-                    SchedulerFactory schedulerFactory = new StdSchedulerFactory();
-                    Scheduler scheduler = schedulerFactory.getScheduler();
-                    scheduler.start();
-                    scheduler.scheduleJob(jobDetail, trigger);
-                }
+                createScheduler();
             } catch (SchedulerException e) {
-                throw new RuntimeException(e);
+                System.out.println("Error: Can not start scheduler." + e);
+                e.printStackTrace();
             }
         }
     }
+
+    private void createScheduler() throws SchedulerException {
+        List<Config> scheduledConfigList =(List<Config>) storageService.getScheduledConfig();
+        for (Config configItem: scheduledConfigList) {
+            JobDataMap dataMap = new JobDataMap();
+            dataMap.put("config", configItem);
+            JobDetail jobDetail = JobBuilder.newJob(SearchJob.class)
+                    .withIdentity("job_" + configItem.getId())
+                    .usingJobData(dataMap)
+                    .build();
+
+            Trigger trigger = TriggerBuilder.newTrigger()
+                    .withIdentity("trigger_" + configItem.getId()).startNow()
+                    .withSchedule(
+                            SimpleScheduleBuilder.simpleSchedule()
+                                    .withIntervalInMinutes(1).repeatForever())
+                    .build();
+
+            SchedulerFactory schedulerFactory = new StdSchedulerFactory();
+            Scheduler scheduler = schedulerFactory.getScheduler();
+            scheduler.start();
+            scheduler.scheduleJob(jobDetail, trigger);
+        }
+    }
+}
