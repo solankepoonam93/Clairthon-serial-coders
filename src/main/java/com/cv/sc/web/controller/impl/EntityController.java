@@ -62,7 +62,6 @@ public class EntityController<T extends SCEntity> implements SCController {
     @GetMapping(path = "/fetchAll/{entityName}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<T> fetchAll(@PathVariable String entityName) throws IOException {
         Class entityClass = EntityTypes.getEntityClass(entityName);
-        List<T> t= dbStorageService.findAll(entityClass);
-        return t;
+        return dbStorageService.findAll(entityClass);
     }
 }
