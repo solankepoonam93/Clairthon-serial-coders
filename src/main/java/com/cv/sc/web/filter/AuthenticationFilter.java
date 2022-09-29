@@ -3,7 +3,6 @@ package com.cv.sc.web.filter;
 import com.cv.sc.cache.TokenCache;
 import com.cv.sc.util.Constants;
 import com.cv.sc.util.ExceptionConstants;
-import org.springframework.context.annotation.Bean;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;

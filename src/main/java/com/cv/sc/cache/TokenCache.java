@@ -8,7 +8,7 @@ import java.util.Set;
  * Date: 19/09/22
  */
 public class TokenCache {
-    // TODO pathetic implementation- but let's keep it for now
+    // pathetic implementation- but let's keep it for now
     private static final Set<String> tokenSet = new HashSet<>();
 
     private TokenCache() {

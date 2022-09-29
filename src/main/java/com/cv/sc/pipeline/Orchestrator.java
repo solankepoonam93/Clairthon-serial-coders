@@ -6,7 +6,6 @@ import com.cv.sc.model.SearchResponse;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Map;
 
 public interface Orchestrator {
     public SearchResponse search(Config config) throws HttpClientException, IOException;

@@ -1,6 +1,9 @@
 package com.cv.sc.util;
 
 public class ExceptionConstants {
+
+    private ExceptionConstants() {
+    }
     public static final String EXCEPTION_SCHEDULER_FAILURE = "Can not start scheduler";
     public static final String EXCEPTION_HTTP_METHOD_NOT_SUPPORTED = "HTTP Method not supported!";
     public static final String EXCEPTION_UNAUTHORIZED_TOKEN = "You are not Authorized to use this API. Please pass valid token.";
