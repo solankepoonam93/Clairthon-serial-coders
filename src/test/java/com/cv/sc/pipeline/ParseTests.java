@@ -44,7 +44,7 @@ public class ParseTests {
         List<GitHubContentSearch> extract = searcher.extract(CONTENT_SEARCH_RESULT_JSON, GitHubContentSearch.class);
         Assert.assertFalse(extract.isEmpty());
         Assert.assertNotNull(extract.get(0).getName());
-        Assert.assertEquals(1, extract.size());
+        Assert.assertTrue(extract.size()>=1);
     }
 
     @Test
