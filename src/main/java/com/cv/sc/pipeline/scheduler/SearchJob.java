@@ -2,7 +2,6 @@ package com.cv.sc.pipeline.scheduler;
 
 import com.cv.sc.exception.HttpClientException;
 import com.cv.sc.model.Config;
-import com.cv.sc.model.SearchResponse;
 import com.cv.sc.pipeline.OrchestratorImpl;
 import com.cv.sc.storage.impl.DBStorageServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +22,7 @@ public class SearchJob implements Job {
         List<Config> scheduledConfigList = (List<Config>) storageService.getScheduledConfig();
         for (Config configItem: scheduledConfigList) {
             try {
-                SearchResponse jobResponse = orchestrator.search(configItem);
-                //Todo save response in database.
+                 orchestrator.search(configItem);
                 log.info("running search job for " + configItem.getConfigName() + " @ " + DateTime.now());
             } catch (HttpClientException | IOException e) {
                 throw new RuntimeException(e);

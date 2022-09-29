@@ -3,7 +3,6 @@ package com.cv.sc.pipeline.scheduler;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
-import org.springframework.util.Assert;
 
 @Slf4j
 public class SearchScheduler {
@@ -16,11 +15,8 @@ public class SearchScheduler {
         return instance;
     }
 
-    String cronInterval = System.getenv("quartz.cron.interval");
 
     public void createJobScheduler() throws SchedulerException {
-
-        Assert.notNull(cronInterval,"Set up cron interval in environment variable.");
         JobDetail jobDetail = JobBuilder.newJob(SearchJob.class)
                 .withIdentity("job1")
                 .build();
@@ -29,7 +25,7 @@ public class SearchScheduler {
                 .withIdentity("trigger1").startNow()
                 .withSchedule(
                         SimpleScheduleBuilder.simpleSchedule()
-                                .withIntervalInMinutes(Integer.parseInt(cronInterval)).repeatForever())
+                                .withIntervalInMinutes(1).repeatForever())
                 .build();
 
         SchedulerFactory schedulerFactory = new StdSchedulerFactory();
