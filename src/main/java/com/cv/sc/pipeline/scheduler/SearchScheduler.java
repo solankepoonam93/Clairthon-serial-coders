@@ -1,10 +1,11 @@
 package com.cv.sc.pipeline.scheduler;
 
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.util.Assert;
 
-
+@Slf4j
 public class SearchScheduler {
     private static SearchScheduler instance;
 
@@ -35,5 +36,6 @@ public class SearchScheduler {
         Scheduler scheduler = schedulerFactory.getScheduler();
         scheduler.start();
         scheduler.scheduleJob(jobDetail, trigger);
+        log.info("Scheduler created");
     }
 }

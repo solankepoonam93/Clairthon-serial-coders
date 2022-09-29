@@ -2,14 +2,16 @@ package com.cv.sc.storage.impl;
 
 import com.cv.sc.storage.EntityManagerProvider;
 import com.cv.sc.storage.StorageService;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 public class DBStorageServiceImpl implements StorageService {
 
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     private static DBStorageServiceImpl instance;
 
@@ -30,6 +32,7 @@ public class DBStorageServiceImpl implements StorageService {
             entityManager.persist(searchParent);
             entityManager.getTransaction().commit();
         } catch (Exception e) {
+            log.error(e.getMessage());
             throw e;
         }
 
@@ -54,6 +57,7 @@ public class DBStorageServiceImpl implements StorageService {
             value = entityManager.merge(value);
             entityManager.getTransaction().commit();
         } catch (Exception e) {
+            log.error(e.getMessage());
             throw e;
         }
         return value;

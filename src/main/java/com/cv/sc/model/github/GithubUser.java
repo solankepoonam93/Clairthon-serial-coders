@@ -12,8 +12,8 @@ public class GithubUser implements GitHubEntity {
     private String login;
     private String type;
     private Float score;
-    private String repos_url;
-    private String avatar_url;
+    private String reposUrl;
+    private String avatarUrl;
     private String url;
 
     public Long getId() {
@@ -48,20 +48,20 @@ public class GithubUser implements GitHubEntity {
         this.score = score;
     }
 
-    public String getRepos_url() {
-        return repos_url;
+    public String getReposUrl() {
+        return reposUrl;
     }
 
-    public void setRepos_url(String repos_url) {
-        this.repos_url = repos_url;
+    public void setReposUrl(String reposUrl) {
+        this.reposUrl = reposUrl;
     }
 
-    public String getAvatar_url() {
-        return avatar_url;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public void setAvatar_url(String avatar_url) {
-        this.avatar_url = avatar_url;
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public String getUrl() {

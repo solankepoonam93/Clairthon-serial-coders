@@ -1,6 +1,8 @@
 package com.cv.sc.web.filter;
 
 import com.cv.sc.cache.TokenCache;
+import com.cv.sc.util.Constants;
+import com.cv.sc.util.ExceptionConstants;
 import org.springframework.context.annotation.Bean;
 
 import javax.servlet.*;
@@ -23,24 +25,24 @@ public class AuthenticationFilter implements Filter {
         try {
             if(! isBypassUrl(servletRequest.getRequestURI())) {
                 // get token
-                String authorization = servletRequest.getHeader("Authorization");
+                String authorization = servletRequest.getHeader(Constants.AUTH_HEADER);
                 if(authorization == null || authorization.isEmpty()) {
                     // return error
-                    servletResponse.sendError(UNAUTHORIZED.value(), "Token not present or it is invalid");
+                    servletResponse.sendError(UNAUTHORIZED.value(), ExceptionConstants.EXCEPTION_INVALID_TOKEN);
                     return;
                 }
                 String token = authorization.split(" ")[1];  // Authorization: Bearer <token>
-                if(TokenCache.isTokenPresent(token)) {
+                if(Boolean.TRUE.equals(TokenCache.isTokenPresent(token))) {
                     chain.doFilter(request, response);
                 } else {
-                    servletResponse.sendError(UNAUTHORIZED.value(), "Invalid token. Please login again and get a new valid token");
+                    servletResponse.sendError(UNAUTHORIZED.value(), ExceptionConstants.EXCEPTION_INVALID_TOKEN_GENERATE_NEW);
                     // returns
                 }
             } else { // all good
                 chain.doFilter(request, response);
             }
         } catch (Exception e) {
-            servletResponse.sendError(INTERNAL_SERVER_ERROR.value(), "Something went wrong during authentication");
+            servletResponse.sendError(INTERNAL_SERVER_ERROR.value(), ExceptionConstants.EXCEPTION_SOMETHING_WENT_WRONG);
         }
     }
 

@@ -11,7 +11,7 @@ import javax.persistence.Persistence;
 public class EntityManagerProvider {
     private static EntityManagerProvider instance;
 
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     private EntityManagerProvider() {
         EntityManagerFactory factory = Persistence.createEntityManagerFactory("myDB");

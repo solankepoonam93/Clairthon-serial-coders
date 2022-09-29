@@ -2,6 +2,7 @@ package com.cv.sc.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.Date;
 
 import static javax.persistence.TemporalType.TIMESTAMP;
@@ -109,11 +110,11 @@ public class Config implements SCEntity {
     public String toString() {
         return "Config{" +
                 "id=" + id +
-                ", congigName='" + configName + '\'' +
-                ", codeSearchKeywords='" + codeSearchKeywords + '\'' +
-                ", userSearchKeywords='" + userSearchKeywords + '\'' +
-                ", repositoryNames='" + repositoryNames + '\'' +
-                ", classNames='" + fileNames + '\'' +
+                ", configName='" + configName + '\'' +
+                ", codeSearchKeywords='" + Arrays.toString(codeSearchKeywords) + '\'' +
+                ", userSearchKeywords='" + Arrays.toString(userSearchKeywords) + '\'' +
+                ", repositoryNames='" + Arrays.toString(repositoryNames) + '\'' +
+                ", classNames='" + Arrays.toString(fileNames) + '\'' +
                 ", customerName='" + customerName + '\'' +
                 ", modifiedBy='" + modifiedBy + '\'' +
                 ", modifiedDate=" + modifiedDate +

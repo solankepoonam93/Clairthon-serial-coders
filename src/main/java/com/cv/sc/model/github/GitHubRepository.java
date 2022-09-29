@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 public class GitHubRepository implements GitHubEntity {
     private String id;
     private String name;
-    private String full_name;
+    private String fullName;
 
     @JsonAlias("private")
     private Boolean accessible;
@@ -36,12 +36,12 @@ public class GitHubRepository implements GitHubEntity {
         this.name = name;
     }
 
-    public String getFull_name() {
-        return full_name;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFull_name(String full_name) {
-        this.full_name = full_name;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public Boolean getAccessible() {

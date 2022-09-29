@@ -15,7 +15,6 @@ public class OrchestratorImplTest {
         Assert.assertTrue(searchResponse.getContentSearchResults().size()>0);
         Assert.assertTrue(searchResponse.getUserSearchResults().size()>0);
         Assert.assertTrue(searchResponse.getFileSearchResults().size()>0);
-        // System.out.println(new ObjectMapper().writeValueAsString(searchResponse));
     }
 
     private Config getConfig() {

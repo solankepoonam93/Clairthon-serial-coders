@@ -2,6 +2,8 @@ package com.cv.sc.web.controller.impl;
 
 import com.cv.sc.cache.TokenCache;
 import com.cv.sc.model.SCEntity;
+import com.cv.sc.util.Constants;
+import com.cv.sc.util.ExceptionConstants;
 import com.cv.sc.web.controller.AuthenticationController;
 import com.cv.sc.model.APIResponse;
 import org.springframework.http.HttpStatus;
@@ -31,7 +33,7 @@ public class BasicAuthenticationController<T extends SCEntity> implements Authen
     @Override
     public APIResponse login(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
         APIResponse apiResponse = null;
-        String authorization = httpServletRequest.getHeader("Authorization");
+        String authorization = httpServletRequest.getHeader(Constants.AUTH_HEADER);
         authorization = authorization.split(" ")[1]; // Basic <value>
         String usernamePass = new String(Base64.getDecoder().decode(authorization), StandardCharsets.UTF_8); // username:password
         String[] split = usernamePass.split(":");
@@ -39,7 +41,7 @@ public class BasicAuthenticationController<T extends SCEntity> implements Authen
         if("admin".equalsIgnoreCase(split[0]) && "bkpune".equals(split[1])) { // username always case-insensitive
             apiResponse = buildAPIResponse(HttpStatus.OK, buildToken(), null);
         } else {
-            apiResponse = buildAPIResponse(HttpStatus.UNAUTHORIZED, null, "You are not Authorized to use this API. Please pass valid token.");
+            apiResponse = buildAPIResponse(HttpStatus.UNAUTHORIZED, null, ExceptionConstants.EXCEPTION_UNAUTHORIZED_TOKEN);
         }
 
         return apiResponse;

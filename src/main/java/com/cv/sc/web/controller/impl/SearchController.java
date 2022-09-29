@@ -1,18 +1,14 @@
 package com.cv.sc.web.controller.impl;
 
 import com.cv.sc.exception.HttpClientException;
-import com.cv.sc.model.APIResponse;
 import com.cv.sc.model.Config;
 import com.cv.sc.model.SearchResponse;
 import com.cv.sc.model.github.*;
 import com.cv.sc.pipeline.Orchestrator;
 import com.cv.sc.pipeline.OrchestratorImpl;
-import com.cv.sc.pipeline.searcher.GitHubSearcher;
-import com.cv.sc.pipeline.searcher.Searcher;
 import com.cv.sc.storage.StorageService;
 import com.cv.sc.storage.impl.DBStorageServiceImpl;
 import com.cv.sc.web.controller.SCController;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,9 +27,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/search")
 public class SearchController implements SCController {
-    private StorageService storageService;
+    private final StorageService storageService;
 
-    private Orchestrator orchestrator;
+    private final Orchestrator orchestrator;
 
     public SearchController() {
         storageService = DBStorageServiceImpl.getInstance();
@@ -95,7 +91,7 @@ public class SearchController implements SCController {
         user.setLogin("bkpune");
         user.setId(1L);
         user.setType("ADMIN");
-        user.setAvatar_url("https://facebook.com/bkpune");
+        user.setAvatarUrl("https://facebook.com/bkpune");
         user.setScore(100F);
         return user;
     }

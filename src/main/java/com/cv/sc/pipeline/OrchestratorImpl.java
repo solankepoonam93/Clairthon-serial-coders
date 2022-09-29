@@ -16,9 +16,9 @@ import java.util.Objects;
 public class OrchestratorImpl implements Orchestrator {
 
     private static OrchestratorImpl instance;
-    private StorageService storageService;
+    private final StorageService storageService;
 
-    private Searcher gitHubSearcher;
+    private final Searcher gitHubSearcher;
 
     public static OrchestratorImpl getInstance() {
         if (instance == null) {

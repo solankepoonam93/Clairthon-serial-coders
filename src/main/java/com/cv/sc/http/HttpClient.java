@@ -1,8 +1,11 @@
 package com.cv.sc.http;
 
 import com.cv.sc.exception.HttpClientException;
+import com.cv.sc.util.Constants;
+import com.cv.sc.util.ExceptionConstants;
 import com.google.api.client.http.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -13,6 +16,7 @@ import java.util.Map;
  * <br>Created By: bhushan.karmarkar12@gmail.com<br>
  * Date: 12/09/22
  */
+@Slf4j
 public class HttpClient {
 
     private String url;
@@ -61,16 +65,16 @@ public class HttpClient {
                 }
             }
             httpRequest = requestFactory.buildGetRequest(genericUrl);
-            System.out.println(genericUrl);
+            log.info(genericUrl.toString());
         } else if(httpMethod.equals(HttpMethod.POST)) {
             httpRequest = requestFactory.buildPostRequest(new GenericUrl(url), new UrlEncodedContent(queryParams));
             if(content != null) {
-                httpRequest.setContent(ByteArrayContent.fromString("application/json", content));
+                httpRequest.setContent(ByteArrayContent.fromString(Constants.APPLICATION_JSON, content));
             }
         }
 
         if(httpRequest == null) {
-            throw new HttpClientException("HTTP Method not supported!");
+            throw new HttpClientException(ExceptionConstants.EXCEPTION_HTTP_METHOD_NOT_SUPPORTED);
         }
         setHeaders(httpRequest);
         return httpRequest;

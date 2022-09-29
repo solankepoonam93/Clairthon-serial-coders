@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import com.cv.sc.pipeline.scheduler.SearchScheduler;
 import com.cv.sc.web.listener.SCApplicationListener;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 import org.quartz.SchedulerException;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
