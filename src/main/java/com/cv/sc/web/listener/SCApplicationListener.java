@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class SCApplicationListener implements ApplicationListener {
+public class SCApplicationListener implements ApplicationListener<ApplicationEvent> {
 
-  private SearchScheduler searchScheduler = SearchScheduler.getInstance();
+  private final SearchScheduler searchScheduler = SearchScheduler.getInstance();
 
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
