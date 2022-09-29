@@ -113,7 +113,7 @@ public class GitHubSearcher implements Searcher {
         return  extract(codeResponseString, GitHubContentSearch.class);
     }
 
-    public Map<String, String> getRepoSearchResult(String searchTerm) {
+    public Map<String, String> getRepoSearchResult(String searchTerm) throws HttpClientException, IOException {
 
         String repoRequestUrl= getRequestUrlQuery(GitHubEndpoints.REPO_SEARCH_ENDPOINT,
                 Map.of(Constants.QUERY, searchTerm));
@@ -122,15 +122,9 @@ public class GitHubSearcher implements Searcher {
                 Collections.emptyMap(), getHeaders(), HttpMethod.GET);
         HttpResponse repoResponse;
         Map<String, String> responseMap = new HashMap<>();
-        try {
-            repoResponse = repoHttpClient.exchange();
-            String repoResponseString = repoResponse.parseAsString();
-            responseMap.put("RepoResult",repoResponseString);
-        } catch (HttpClientException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        repoResponse = repoHttpClient.exchange();
+        String repoResponseString = repoResponse.parseAsString();
+        responseMap.put("RepoResult",repoResponseString);
         return responseMap;
     }
 
@@ -139,17 +133,17 @@ public class GitHubSearcher implements Searcher {
     public String getRequestUrlQuery(String url, Map<String, String> params){
         StringBuilder requestQueryUrl = new StringBuilder();
         requestQueryUrl.append(url);
-        for(String key: params.keySet()) {
-            if(key.equals("q")) {
+        for(Map.Entry<String,String> entry : params.entrySet()) {
+            if(entry.getKey().equals("q")) {
                 requestQueryUrl.append("?");
-                requestQueryUrl.append(key);
+                requestQueryUrl.append(entry.getKey());
                 requestQueryUrl.append("=");
-                requestQueryUrl.append(params.get(key));
+                requestQueryUrl.append(entry.getValue());
             } else {
                 requestQueryUrl.append("&");
-                requestQueryUrl.append(key);
+                requestQueryUrl.append(entry.getKey());
                 requestQueryUrl.append(":");
-                requestQueryUrl.append(params.get(key));
+                requestQueryUrl.append(entry.getValue());
             }
         }
         return requestQueryUrl.toString();

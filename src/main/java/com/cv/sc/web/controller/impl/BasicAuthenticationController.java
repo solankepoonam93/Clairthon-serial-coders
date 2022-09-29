@@ -54,7 +54,7 @@ public class BasicAuthenticationController<T extends SCEntity> implements Authen
     }
 
     @PostMapping(value = "/logout", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    private void logout(String token){
+    public void logout(String token){
         TokenCache.removeToken(token);
     }
 
