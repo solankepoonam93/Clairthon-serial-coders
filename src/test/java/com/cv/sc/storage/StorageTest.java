@@ -16,10 +16,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created By: bhushan.karmarkar12@gmail.com
@@ -70,6 +68,7 @@ public class StorageTest {
     }
     private SearchResponse getTestSearchResponse() {
         SearchResponse searchResponse = new SearchResponse();
+        searchResponse.setCreatedOn(System.currentTimeMillis());
         List<GithubUser> userList = new ArrayList<>();
         GithubUser user = new GithubUser();
         user.setLogin("bkpune");
@@ -87,6 +86,11 @@ public class StorageTest {
         fileSearch.setName("Test File Search");
         fileList.add(fileSearch);
         searchResponse.addFileSearchResult(Map.of("files", fileList));
+
+        Config config = new Config();
+        config.setId(1L);
+        searchResponse.setConfig(config);
+
         return searchResponse;
     }
     @Test
@@ -109,6 +113,20 @@ public class StorageTest {
         Assert.assertEquals("http://test_updated_query_url", searchResultUpdated.getQueryUrl());
     }
 
+    @Test
+    public void fetchSearchResponse() throws IOException {
+        Config config = getConfig();
+        dbStorageService.save(config);
+
+        SearchResponse testSearchResponse = getTestSearchResponse();
+        testSearchResponse.setConfig(config);
+        dbStorageService.save(testSearchResponse);
+
+        List<SearchResponse> all = dbStorageService.fetchWithPredicate(SearchResponse.class, "config", ""+config.getId());
+        List<SearchResponse> collect = all.stream().filter(o1 -> o1.getConfig().getId().equals(config.getId())).sorted((Comparator.comparing(SearchResponse::getCreatedOn))).collect(Collectors.toList());
+        Assert.assertEquals(config.getId(), collect.get(0).getConfig().getId());
+
+    }
     private SearchResult getSearchResult(SearchParent searchParent) {
         SearchResult searchResult = new SearchResult();
         searchResult.setQueryUrl("https://api.github.com/search/users?q=solankepoonam in:user");

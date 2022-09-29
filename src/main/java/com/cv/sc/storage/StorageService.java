@@ -18,5 +18,5 @@ public interface StorageService<T extends SCEntity> {
 
     List<T> findAll(Class entityClass) throws IOException;
 
-    List<T> fetchWithPredicate(Class entityClass, String predicateString)throws IOException; // WARNING possible chance of SQLi
+    List<T> fetchWithPredicate(Class entityClass, String paramName, String value);
 }

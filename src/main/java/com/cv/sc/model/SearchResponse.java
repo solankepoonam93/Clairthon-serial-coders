@@ -20,6 +20,7 @@ public class SearchResponse implements SCEntity {
 
     private Long createdOn;
 
+    private Config config;
     private String userSearchJsonResultString;
 
     private String contentSearchJsonResultString;
@@ -133,5 +134,14 @@ public class SearchResponse implements SCEntity {
 
     public void setFileSearchResults(List<Map<String, List<GitHubFileSearch>>> fileSearchResults) {
         this.fileSearchResults = fileSearchResults;
+    }
+
+    @ManyToOne
+    public Config getConfig() {
+        return config;
+    }
+
+    public void setConfig(Config config) {
+        this.config = config;
     }
 }

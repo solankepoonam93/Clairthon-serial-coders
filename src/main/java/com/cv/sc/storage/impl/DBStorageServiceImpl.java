@@ -67,15 +67,11 @@ public class DBStorageServiceImpl implements StorageService {
         return entityManager.createQuery("Select t from " + entityClass.getSimpleName() + " t").getResultList();
     }
 
-    @Override
-    public List fetchWithPredicate(Class entityClass, String predicateString) throws IOException {
-        return entityManager.createQuery("Select c from " + entityClass.getSimpleName() + " c where "+ predicateString).getResultList();
-    }
-
     public List getScheduledConfig () {
         return entityManager.createQuery("Select c from Config c where isScheduled = true ").getResultList();
     }
 
+    @Override
     public List fetchWithPredicate(Class entityClass, String paramName, String value){
         return entityManager.createQuery("Select t from " + entityClass.getSimpleName() + " t where "+paramName +"="+value).getResultList();
     }

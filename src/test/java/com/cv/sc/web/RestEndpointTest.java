@@ -95,7 +95,7 @@ public class RestEndpointTest extends WebTests {
     @Test
     public void testFetch() throws HttpClientException, IOException {
         String token = (String) getToken(validCred).getResponse();
-        String responseString = fetchEntity(token);
+        String responseString = fetchEntity(token, "SearchResult", "1");
         SearchResult searchResult = objectMapper.readValue(responseString, SearchResult.class);
         Assert.assertNotNull(searchResult);
         Assert.assertEquals(1L, (long)searchResult.getId());
@@ -119,7 +119,7 @@ public class RestEndpointTest extends WebTests {
     @Test
     public void testUpdate() throws HttpClientException, IOException {
         String token = (String) getToken(validCred).getResponse();
-        String responseString = fetchEntity(token);
+        String responseString = fetchEntity(token, "SearchResult", "1");
 
         SearchResult searchResult = objectMapper.readValue(responseString, SearchResult.class);
         searchResult.setQueryUrl("http://test_updated_query_url");
@@ -138,24 +138,59 @@ public class RestEndpointTest extends WebTests {
         Assert.assertEquals("http://test_updated_query_url", searchResultUpdated.getQueryUrl());
     }
 
+    @Test
+    public void testPersist() throws HttpClientException, IOException {
+        Config config1 = saveConfig();
+        Assert.assertNotNull(config1.getId());
+    }
+
+    private Config saveConfig() throws HttpClientException, IOException {
+        Config config = new Config();
+        config.setConfigName("TEST CONFIG");
+        HttpClient httpClient = getHttpClient(getPersistUrl("Config"),
+                Collections.emptyMap(), getHeaderMapContainingSCToken((String) getToken(validCred).getResponse()), HttpMethod.POST);
+        httpClient.setContent(objectMapper.writeValueAsString(config));
+        HttpResponse response = httpClient.exchange();
+        Config config1 = objectMapper.readValue(response.parseAsString(), Config.class);
+        return config1;
+    }
 
     @Test
-    public void testSearch() throws HttpClientException, IOException {
-        HttpClient httpClient = getHttpClient(getSearchUrl(),
+    public void testFetchSearchResponseForConfig() throws HttpClientException, IOException {
+        Config config = saveConfig();
+        SearchResponse search = search(config);// creates SearchResponse
+
+        HttpClient httpClient = getHttpClient(getFetchUrlForSearchResponse(config.getId().toString()),
                 Collections.emptyMap(), getHeaderMapContainingSCToken((String) getToken(validCred).getResponse()), HttpMethod.GET);
         HttpResponse response = httpClient.exchange();
         SearchResponse searchResponse = objectMapper.readValue(response.parseAsString(), SearchResponse.class);
+        Assert.assertEquals(config.getId(), searchResponse.getConfig().getId());
+    }
+
+    @Test
+    public void testSearch() throws HttpClientException, IOException {
+        Config config = saveConfig();
+        SearchResponse searchResponse = search(config);
+
         Assert.assertNotNull(searchResponse.getId());
         Assert.assertNotNull(searchResponse.getFileSearchJsonResultString());
         Assert.assertTrue(searchResponse.getUserSearchResults().size() > 0);
     }
 
-    private String getSearchUrl() {
-        return "http://localhost:8090/search/config/1?test=true"; // test = 1 for not to make actual calls
+    private SearchResponse search(Config config) throws HttpClientException, IOException {
+        HttpClient httpClient = getHttpClient(getSearchUrl(config.getId().toString()),
+                Collections.emptyMap(), getHeaderMapContainingSCToken((String) getToken(validCred).getResponse()), HttpMethod.GET);
+        HttpResponse response = httpClient.exchange();
+        SearchResponse searchResponse = objectMapper.readValue(response.parseAsString(), SearchResponse.class);
+        return searchResponse;
     }
 
-    private String fetchEntity(String token) throws HttpClientException, IOException {
-        HttpClient httpClient = getHttpClient(getFetchUrl(),
+    private String getSearchUrl(String id) {
+        return "http://localhost:8090/search/config/"+id + "?test=true"; // test = 1 for not to make actual calls
+    }
+
+    private String fetchEntity(String token, String entityType, String id) throws HttpClientException, IOException {
+        HttpClient httpClient = getHttpClient(getFetchUrl(entityType, id),
                 Collections.emptyMap(), getHeaderMapContainingSCToken(token), HttpMethod.GET);
         HttpResponse response = httpClient.exchange();
         return response.parseAsString();
@@ -177,8 +212,8 @@ public class RestEndpointTest extends WebTests {
         return "http://localhost:8090/auth/basic";
     }
 
-    private String getFetchUrl() {
-        return "http://localhost:8090/dao/fetch/SearchResult/1";
+    private String getFetchUrl(String entityName, String id) {
+        return "http://localhost:8090/dao/fetch/"+ entityName + "/"+id;
     }
 
     private String fetchAllUrl() {
@@ -188,4 +223,13 @@ public class RestEndpointTest extends WebTests {
     private String getUpdateUrl() {
         return "http://localhost:8090/dao/update/SearchResult";
     }
+
+    private String getFetchUrlForSearchResponse(String id) {
+        return "http://localhost:8090/search/getSearchResponse/config/"+id;
+    }
+
+    private String getPersistUrl(String entityType) {
+        return "http://localhost:8090/dao/persist/"+entityType;
+    }
+
 }

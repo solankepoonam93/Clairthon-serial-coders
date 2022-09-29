@@ -82,7 +82,7 @@ public class GitHubSearcher implements Searcher {
     @Override
     public SearchResponse search(Config config) throws HttpClientException, IOException {
         SearchResponse searchResponse = new SearchResponse();
-
+        searchResponse.setConfig(config);
         if (Objects.nonNull(config.getUserSearchKeywords())) {
             for (String searchTerm : config.getUserSearchKeywords()) {
                 searchResponse.addUserSearchResult(Map.of(searchTerm, getUserSearchResult(searchTerm)));

@@ -38,6 +38,7 @@ public class OrchestratorImpl implements Orchestrator {
 
     @Override
     public SearchResponse saveSearchResult(SearchResponse searchResponse) throws UnsupportedEncodingException {
+        searchResponse.setCreatedOn(System.currentTimeMillis());
         return (SearchResponse) storageService.save(searchResponse);
     }
 

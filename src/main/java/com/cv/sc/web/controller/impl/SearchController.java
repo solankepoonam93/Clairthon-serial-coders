@@ -3,22 +3,26 @@ package com.cv.sc.web.controller.impl;
 import com.cv.sc.exception.HttpClientException;
 import com.cv.sc.model.Config;
 import com.cv.sc.model.SearchResponse;
-import com.cv.sc.model.github.*;
+import com.cv.sc.model.github.GitHubContentSearch;
+import com.cv.sc.model.github.GitHubFileSearch;
+import com.cv.sc.model.github.GitHubRepository;
+import com.cv.sc.model.github.GithubUser;
 import com.cv.sc.pipeline.Orchestrator;
 import com.cv.sc.pipeline.OrchestratorImpl;
 import com.cv.sc.storage.StorageService;
 import com.cv.sc.storage.impl.DBStorageServiceImpl;
 import com.cv.sc.web.controller.SCController;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created By: bhushan.karmarkar12@gmail.com
@@ -36,21 +40,33 @@ public class SearchController implements SCController {
         orchestrator = OrchestratorImpl.getInstance();
     }
 
-    @RequestMapping(path = "/config/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/getSearchResponse/config/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public SearchResponse fetchSearchResponseForConfig(@PathVariable Long id, HttpServletRequest request) throws IOException, HttpClientException {
+        // fetch config with this id
+        Config config = (Config) storageService.fetch(Config.class, id);
+        List<SearchResponse> list = storageService.fetchWithPredicate(SearchResponse.class, "config", ""+config.getId());
+        if(list != null && list.size()>0) {
+            List<SearchResponse> collect = list.stream().filter(o1 -> o1.getConfig().getId().equals(config.getId())).sorted((Comparator.comparing(SearchResponse::getCreatedOn))).collect(Collectors.toList());
+            return collect.get(0);
+        } else {
+            return new SearchResponse();
+        }
+    }
+
+    @GetMapping(path = "/config/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public SearchResponse search(@PathVariable Long id, HttpServletRequest request) throws IOException, HttpClientException {
         // fetch config with this id
         Config config = (Config) storageService.fetch(Config.class, id);
         // pass this config to orchestrator.search
         if(request.getParameter("test") != null && request.getParameter("test").equalsIgnoreCase("true")) {
-            return getTestSearchResponse();
+            return getTestSearchResponse(config);
         } else {
             return orchestrator.search(config);
         }
     }
 
-    private SearchResponse getTestSearchResponse() {
+    private SearchResponse getTestSearchResponse(Config config) throws UnsupportedEncodingException {
         SearchResponse searchResponse = new SearchResponse();
-        searchResponse.setId(1L);
         List<GithubUser> userList = new ArrayList<>();
         userList.add(getGithubUser());
         searchResponse.addUserSearchResult(Map.of("users", userList));
@@ -63,6 +79,9 @@ public class SearchController implements SCController {
         List<GitHubFileSearch> fileList = new ArrayList<>();
         fileList.add(getGitHubFileSearch(contentSearch));
         searchResponse.addFileSearchResult(Map.of("files", fileList));
+
+        searchResponse.setConfig(config);
+        orchestrator.saveSearchResult(searchResponse);
         return searchResponse;
     }
 
