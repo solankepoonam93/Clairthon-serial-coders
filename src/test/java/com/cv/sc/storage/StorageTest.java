@@ -62,7 +62,7 @@ public class StorageTest {
         SearchResponse testSearchResponse = getTestSearchResponse();
         SearchResponse savedSearchResponse = (SearchResponse) dbStorageService.save(testSearchResponse);
 
-        Assert.assertTrue(savedSearchResponse.getId() != null);
+        Assert.assertNotNull(savedSearchResponse.getId());
         ObjectMapper objectMapper = new ObjectMapper();
         Assert.assertEquals(objectMapper.writeValueAsString(testSearchResponse.getUserSearchResults()), savedSearchResponse.getUserSearchJsonResultString());
         Assert.assertEquals(objectMapper.writeValueAsString(testSearchResponse.getContentSearchResults()), savedSearchResponse.getContentSearchJsonResultString());
@@ -105,8 +105,8 @@ public class StorageTest {
         searchResult.setJsonResult("Updated Result inside TEST");
         SearchResult searchResultUpdated = (SearchResult) dbStorageService.update(searchResult);
 
-        Assert.assertTrue(searchResultUpdated.getJsonResult().equals("Updated Result inside TEST"));
-        Assert.assertTrue(searchResultUpdated.getQueryUrl().equals("http://test_updated_query_url"));
+        Assert.assertEquals("Updated Result inside TEST", searchResultUpdated.getJsonResult());
+        Assert.assertEquals("http://test_updated_query_url", searchResultUpdated.getQueryUrl());
     }
 
     private SearchResult getSearchResult(SearchParent searchParent) {

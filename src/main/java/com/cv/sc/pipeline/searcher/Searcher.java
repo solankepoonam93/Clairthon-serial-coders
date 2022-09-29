@@ -4,7 +4,6 @@ import com.cv.sc.exception.HttpClientException;
 import com.cv.sc.model.Config;
 import com.cv.sc.model.SearchResponse;
 import com.cv.sc.model.github.GitHubContentSearch;
-import com.cv.sc.model.github.GitHubEntity;
 import com.cv.sc.model.github.GitHubFileSearch;
 import com.cv.sc.model.github.GithubUser;
 

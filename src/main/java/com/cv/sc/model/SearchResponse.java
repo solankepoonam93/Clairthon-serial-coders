@@ -1,7 +1,6 @@
 package com.cv.sc.model;
 
 import com.cv.sc.model.github.GitHubContentSearch;
-import com.cv.sc.model.github.GitHubEntity;
 import com.cv.sc.model.github.GitHubFileSearch;
 import com.cv.sc.model.github.GithubUser;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -18,6 +17,8 @@ import java.util.Map;
 public class SearchResponse implements SCEntity {
 
     private Long id;
+
+    private Long createdOn;
 
     private String userSearchJsonResultString;
 
@@ -48,6 +49,14 @@ public class SearchResponse implements SCEntity {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Long createdOn) {
+        this.createdOn = createdOn;
     }
 
     @Lob

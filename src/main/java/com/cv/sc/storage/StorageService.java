@@ -1,10 +1,12 @@
 package com.cv.sc.storage;
 
+import com.cv.sc.model.SCEntity;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-public interface StorageService {
+public interface StorageService<T extends SCEntity> {
 
     Object save(Object o) throws UnsupportedEncodingException;
 
@@ -14,5 +16,7 @@ public interface StorageService {
 
     Object update(Object value) throws IOException;
 
-    List findAll(Class entityClass) throws IOException;
+    List<T> findAll(Class entityClass) throws IOException;
+
+    List<T> fetchWithPredicate(Class entityClass, String predicateString)throws IOException; // WARNING possible chance of SQLi
 }

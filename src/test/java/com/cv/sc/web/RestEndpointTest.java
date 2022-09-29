@@ -67,25 +67,25 @@ public class RestEndpointTest extends WebTests {
     public void testAuthenticationPositiveCase() throws HttpClientException, IOException {
         APIResponse apiResponse = getToken(validCred);
         Assert.assertNotNull(apiResponse.getResponse()); // token granted
-        Assert.assertEquals(apiResponse.getResponseStatus(), HttpStatus.OK);
+        Assert.assertEquals(HttpStatus.OK, apiResponse.getResponseStatus());
     }
 
     @Test
     public void testAuthenticationNegativeCase1() throws HttpClientException, IOException {
         APIResponse apiResponse = getToken("admin:poonam");
-        Assert.assertEquals(apiResponse.getResponseStatus(), HttpStatus.UNAUTHORIZED);
+        Assert.assertEquals(HttpStatus.UNAUTHORIZED, apiResponse.getResponseStatus());
     }
 
     @Test
     public void testAuthenticationNegativeCase2() throws HttpClientException, IOException {
         APIResponse apiResponse = getToken("root:poonam");
-        Assert.assertEquals(apiResponse.getResponseStatus(), HttpStatus.UNAUTHORIZED);
+        Assert.assertEquals(HttpStatus.UNAUTHORIZED, apiResponse.getResponseStatus());
     }
 
     @Test
     public void testAuthenticationNegativeCase3() throws HttpClientException, IOException {
         APIResponse apiResponse = getToken("root:bhushan");
-        Assert.assertEquals(apiResponse.getResponseStatus(), HttpStatus.UNAUTHORIZED);
+        Assert.assertEquals(HttpStatus.UNAUTHORIZED, apiResponse.getResponseStatus());
     }
 
     @Test
@@ -110,7 +110,7 @@ public class RestEndpointTest extends WebTests {
         String responseString = fetchEntity(token);
         SearchResult searchResult = objectMapper.readValue(responseString, SearchResult.class);
         Assert.assertNotNull(searchResult);
-        Assert.assertTrue(searchResult.getId().equals(1L));
+        Assert.assertEquals(1L, (long)searchResult.getId());
         Assert.assertEquals("TEST_CONFIG", searchResult.getSearchParent().getConfig().getConfigName());
     }
 
@@ -144,10 +144,10 @@ public class RestEndpointTest extends WebTests {
         HttpResponse exchange = httpClient.exchange();
         SearchResult searchResultUpdated = objectMapper.readValue(exchange.parseAsString(), SearchResult.class);
 
-        Assert.assertTrue(searchResultUpdated.getId().equals(1L));
+        Assert.assertEquals(1L, (long)searchResultUpdated.getId());
         Assert.assertEquals("TEST_CONFIG", searchResultUpdated.getSearchParent().getConfig().getConfigName());
-        Assert.assertTrue(searchResultUpdated.getJsonResult().equals("Updated Result inside TEST"));
-        Assert.assertTrue(searchResultUpdated.getQueryUrl().equals("http://test_updated_query_url"));
+        Assert.assertEquals("Updated Result inside TEST", searchResultUpdated.getJsonResult());
+        Assert.assertEquals("http://test_updated_query_url", searchResultUpdated.getQueryUrl());
     }
 
 
@@ -157,8 +157,8 @@ public class RestEndpointTest extends WebTests {
                 Collections.emptyMap(), getHeaderMapContainingSCToken((String) getToken(validCred).getResponse()), HttpMethod.GET);
         HttpResponse response = httpClient.exchange();
         SearchResponse searchResponse = objectMapper.readValue(response.parseAsString(), SearchResponse.class);
-        Assert.assertTrue(searchResponse.getId() != null);
-        Assert.assertTrue(searchResponse.getFileSearchJsonResultString()!= null);
+        Assert.assertNotNull(searchResponse.getId());
+        Assert.assertNotNull(searchResponse.getFileSearchJsonResultString());
         Assert.assertTrue(searchResponse.getUserSearchResults().size() > 0);
     }
 
