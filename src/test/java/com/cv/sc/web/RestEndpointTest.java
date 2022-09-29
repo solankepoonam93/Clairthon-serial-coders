@@ -77,18 +77,6 @@ public class RestEndpointTest extends WebTests {
     }
 
     @Test
-    public void testAuthenticationNegativeCase2() throws HttpClientException, IOException {
-        APIResponse apiResponse = getToken("root:poonam");
-        Assert.assertEquals(HttpStatus.UNAUTHORIZED, apiResponse.getResponseStatus());
-    }
-
-    @Test
-    public void testAuthenticationNegativeCase3() throws HttpClientException, IOException {
-        APIResponse apiResponse = getToken("root:bhushan");
-        Assert.assertEquals(HttpStatus.UNAUTHORIZED, apiResponse.getResponseStatus());
-    }
-
-    @Test
     public void logoutTest() throws HttpClientException, IOException {
         APIResponse apiResponse = getToken(validCred);
         String token = apiResponse.getResponse().toString();
