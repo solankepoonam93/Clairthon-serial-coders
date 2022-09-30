@@ -70,7 +70,7 @@ public class GitHubSearcher implements Searcher {
         params.put(Constants.QUERY, null);
         params.put(Constants.QUERY_QUALIFIER_FILENAME, searchTerm);
 
-        String fileRequestUrl= getRequestUrlQuery(GitHubEndpoints.CODE_SEARCH_ENDPOINT, params);
+        String fileRequestUrl= getFileSearchRequestUrlQuery(GitHubEndpoints.CODE_SEARCH_ENDPOINT, params);
 
         HttpClient fileHttpClient = new HttpClient(fileRequestUrl,
                 Collections.emptyMap(), getHeaders(), HttpMethod.GET);
@@ -150,6 +150,22 @@ public class GitHubSearcher implements Searcher {
 
     }
 
+    public String getFileSearchRequestUrlQuery(String url, Map<String, String> params){
+        StringBuilder requestQueryUrl = new StringBuilder();
+        requestQueryUrl.append(url);
+        for(Map.Entry<String,String> entry : params.entrySet()) {
+            if(entry.getKey().equals("q")) {
+                requestQueryUrl.append("?");
+                requestQueryUrl.append(entry.getKey());
+                requestQueryUrl.append("= ");
+            } else {
+                requestQueryUrl.append(entry.getKey());
+                requestQueryUrl.append(":");
+                requestQueryUrl.append(entry.getValue());
+            }
+        }
+        return requestQueryUrl.toString();
+    }
     public Map<String, String> getHeaders() {
         String authToken =System.getenv(AUTH_TOKEN);
         Map<String, String> headers = new HashMap<>();
