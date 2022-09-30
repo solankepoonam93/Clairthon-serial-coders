@@ -15,8 +15,8 @@
 <li>It will create jar file and also creates Code coverage report</li>
 
 <li>Running unit tests</li>
-<li>Run mvn test to execute the unit tests <li>
-
+<li>Run mvn test to execute the unit tests
+ <br>
 **Search API**
 <br>
 User is expected to create configuration which will be treated as input for search. Code Police is using github search APIs internally. We support searching public resources only.
