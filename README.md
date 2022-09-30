@@ -4,7 +4,7 @@
 <li>Please make sure you have mysql installed on your machine and the service is running.
 <li>Start mysql client from console.
 <li>Create database using this SQL query: "create database myDB;"
-<li>In META-INF/persistence.xm, provide valid database credentials.
+<li>In resources/META-INF/persistence.xml, provide valid database credentials.
 <li>Tables will be created automatically when tests are executed.
 
 <br><br>
