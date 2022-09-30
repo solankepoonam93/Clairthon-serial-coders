@@ -25,7 +25,7 @@ public class SearchScheduler {
                 .withIdentity("trigger1").startNow()
                 .withSchedule(
                         SimpleScheduleBuilder.simpleSchedule()
-                                .withIntervalInMinutes(1).repeatForever())
+                                .withIntervalInMinutes(20).repeatForever())
                 .build();
 
         SchedulerFactory schedulerFactory = new StdSchedulerFactory();
