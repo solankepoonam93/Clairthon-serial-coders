@@ -16,3 +16,8 @@
 
 <li>Running unit tests</li>
 <li>Run mvn test to execute the unit tests <li>
+
+**Search API**
+<br>
+User is expected to create configuration which will be treated as input for search. Code Police is using github search APIs internally. We support searching public resources only.
+<br>We are limiting the response to most usable information from whatever github is providing. We are not tempering or altering anything at Code Police.
