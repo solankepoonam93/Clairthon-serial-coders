@@ -31,11 +31,6 @@ public class EntityController<T extends SCEntity> implements SCController {
         objectMapper = new ObjectMapper();
     }
     
-    @GetMapping(path = "/test", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String test() {
-        return "Test123";
-    }
-
     @PostMapping(path = "/persist/{entityName}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public T persist(@PathVariable String entityName, @RequestBody String entityJson) throws UnsupportedEncodingException, JsonProcessingException {
 
