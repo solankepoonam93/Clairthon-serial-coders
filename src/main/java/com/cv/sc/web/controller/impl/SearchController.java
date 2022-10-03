@@ -41,11 +41,11 @@ public class SearchController implements SCController {
     }
 
     @GetMapping(path = "/getSearchResponse/config/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SearchResponse fetchSearchResponseForConfig(@PathVariable Long id, HttpServletRequest request) throws IOException, HttpClientException {
+    public SearchResponse fetchSearchResponseForConfig(@PathVariable Long id, HttpServletRequest request) throws IOException {
         // fetch config with this id
         Config config = (Config) storageService.fetch(Config.class, id);
         List<SearchResponse> list = storageService.fetchWithPredicate(SearchResponse.class, "config", ""+config.getId());
-        if(list != null && list.size()>0) {
+        if(list != null && !list.isEmpty()) {
             List<SearchResponse> collect = list.stream().filter(o1 -> o1.getConfig().getId().equals(config.getId())).sorted((Comparator.comparing(SearchResponse::getCreatedOn))).collect(Collectors.toList());
             return collect.get(0);
         } else {
