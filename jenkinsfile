@@ -1,0 +1,25 @@
+pipeline {
+    agent any
+    environment {
+        PATH = "$PATH:/Applications/apache-maven-3.6.3/bin"
+    }
+    stages {
+        stage('Git') {
+            steps {
+                git branch: 'main', credentialsId: 'git-credentials', url: 'https://github.com/solankepoonam93/Clairthon-serial-coders.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh "mvn clean compile"
+            }
+        }
+        stage('SonarQube analysis') {
+          steps{
+            withSonarQubeEnv('sonarQube-9.8') {
+              sh "mvn sonar:sonar"
+            }
+          }
+        }
+    }
+}
